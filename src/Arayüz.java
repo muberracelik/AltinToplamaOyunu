@@ -3,6 +3,7 @@ import java.awt.Toolkit;
 import javax.swing.JButton;
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.border.LineBorder;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -34,8 +35,8 @@ public class Arayüz extends javax.swing.JFrame {
     public void oyunOlustur() {
         if (Integer.parseInt(tahtaX.getText()) < EkranX - 250 && Integer.parseInt(tahtaY.getText()) < EkranY && !kareKenar.getText().isEmpty()) {
             boyutOrantıla();
-            oyunAlani.setSize(Integer.parseInt(tahtaX.getText()), Integer.parseInt(tahtaY.getText()));
-            kontrolAlani.setSize(250, Integer.parseInt(tahtaY.getText()));
+            oyunAlani.setSize(Integer.parseInt(tahtaX.getText()), Integer.parseInt(tahtaY.getText())-40);
+            kontrolAlani.setSize(250, Integer.parseInt(tahtaY.getText())-40);
             this.setSize(250 + Integer.parseInt(tahtaX.getText()), Integer.parseInt(tahtaY.getText()));
             kontrolAlani.setLocation(Integer.parseInt(tahtaX.getText()), 0);
             this.setLocation((EkranX - Integer.parseInt(tahtaX.getText()) - 250) / 2, (EkranY - Integer.parseInt(tahtaY.getText())) / 2);
@@ -44,15 +45,17 @@ public class Arayüz extends javax.swing.JFrame {
             for (int i = 0; i < tahtaYSayisi; i++) {
                 for (int j = 0; j < tahtaXSayisi; j++) {
                     kare[i][j] = new JButton();
+                    LineBorder border = new LineBorder(Color.BLACK, 1);
+                    kare[i][j].setBorder(border);
                     if ((i + j) % 2 != 0) {
                         kare[i][j].setBackground(Color.black);
                     }
-                    oyunAlani.add(kare[i][j]);
+                    oyunAlani.add(kare[i][j],BorderLayout.CENTER);
 
                 }
 
             }
-            setResizable(false);
+            //setResizable(false);
             setVisible(true);
         }
 
