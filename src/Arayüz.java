@@ -18,7 +18,7 @@ public class Arayüz extends javax.swing.JFrame {
     public static Toolkit kit = Toolkit.getDefaultToolkit();
     public static int EkranX;
     public static int EkranY;
-    private JButton[][] kare = new JButton[40][40];
+    private JButton[][] kare = new JButton[tahtaXSayisi][tahtaYSayisi];
     public static int tahtaXSayisi;
     public static int tahtaYSayisi;
     ButtonHandler buttonHandler = new ButtonHandler();
@@ -29,6 +29,7 @@ public class Arayüz extends javax.swing.JFrame {
         EkranY = (int) kit.getScreenSize().height;//Ekran boyutunun yüksekliğini alıyoruz...
         this.setLocation((EkranX - 1050) / 2, (EkranY - 800) / 2);  // Görünüm olarak açılan pencerenin ekranın tam ortasında çıkması için
         this.setSize(1050, 800);
+        oyunAlani.setLayout(new GridLayout(tahtaXSayisi,tahtaYSayisi));
     }
 
     public void oyunOlustur() {
@@ -42,8 +43,8 @@ public class Arayüz extends javax.swing.JFrame {
             
               System.out.println(tahtaXSayisi);
             System.out.println(tahtaYSayisi);
-            for (int i = 0; i < 40; i++) {
-                for (int j = 0; j < 40; j++) {
+            for (int i = 0; i <tahtaYSayisi-1 ; i++) {
+                for (int j = 0; j < tahtaXSayisi-1; j++) {
                     kare[i][j] = new JButton();
                     if((i+j)%2!=0){
                      kare[i][j].setBackground(Color.black);
