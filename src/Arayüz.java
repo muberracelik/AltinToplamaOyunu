@@ -1,9 +1,12 @@
-
 import java.awt.Toolkit;
 import javax.swing.JButton;
 import java.awt.*;
 import java.awt.event.*;
+<<<<<<< Updated upstream
 import javax.swing.border.LineBorder;
+=======
+import javax.swing.JPanel;
+>>>>>>> Stashed changes
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -23,39 +26,56 @@ public class Arayüz extends javax.swing.JFrame {
     public static int tahtaXSayisi;
     public static int tahtaYSayisi;
     ButtonHandler buttonHandler = new ButtonHandler();
-
+    Container cont;
     public Arayüz() {
         initComponents();
         EkranX = (int) kit.getScreenSize().width; //Ekran boyutunun genişliğini alıyoruz...
         EkranY = (int) kit.getScreenSize().height;//Ekran boyutunun yüksekliğini alıyoruz...
         this.setLocation((EkranX - 1050) / 2, (EkranY - 800) / 2);  // Görünüm olarak açılan pencerenin ekranın tam ortasında çıkması için
         this.setSize(1050, 800);
+        
     }
 
     public void oyunOlustur() {
         if (Integer.parseInt(tahtaX.getText()) < EkranX - 250 && Integer.parseInt(tahtaY.getText()) < EkranY && !kareKenar.getText().isEmpty()) {
             boyutOrantıla();
+<<<<<<< Updated upstream
             oyunAlani.setSize(Integer.parseInt(tahtaX.getText()), Integer.parseInt(tahtaY.getText())-40);
             kontrolAlani.setSize(250, Integer.parseInt(tahtaY.getText())-40);
             this.setSize(250 + Integer.parseInt(tahtaX.getText()), Integer.parseInt(tahtaY.getText()));
+=======
+            oyunAlani.setSize(Integer.parseInt(tahtaX.getText()), Integer.parseInt(tahtaY.getText()));
+            kontrolAlani.setSize(250, Integer.parseInt(tahtaY.getText()));
+            this.setSize(250 + Integer.parseInt(tahtaX.getText()),Integer.parseInt(tahtaY.getText()));
+>>>>>>> Stashed changes
             kontrolAlani.setLocation(Integer.parseInt(tahtaX.getText()), 0);
             this.setLocation((EkranX - Integer.parseInt(tahtaX.getText()) - 250) / 2, (EkranY - Integer.parseInt(tahtaY.getText())) / 2);
+           getContentPane().add(oyunAlani);     
             oyunAlani.setLayout(new GridLayout(tahtaXSayisi, tahtaYSayisi));
             kare = new JButton[tahtaXSayisi][tahtaYSayisi];
             for (int i = 0; i < tahtaYSayisi; i++) {
                 for (int j = 0; j < tahtaXSayisi; j++) {
                     kare[i][j] = new JButton();
+<<<<<<< Updated upstream
                     LineBorder border = new LineBorder(Color.BLACK, 1);
                     kare[i][j].setBorder(border);
                     if ((i + j) % 2 != 0) {
                         kare[i][j].setBackground(Color.black);
                     }
                     oyunAlani.add(kare[i][j],BorderLayout.CENTER);
+=======
+                    
+                    oyunAlani.add(kare[i][j]);
+>>>>>>> Stashed changes
 
                 }
 
             }
+<<<<<<< Updated upstream
             //setResizable(false);
+=======
+            
+>>>>>>> Stashed changes
             setVisible(true);
         }
 
