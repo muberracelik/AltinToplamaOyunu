@@ -1,12 +1,16 @@
+
 import java.awt.Toolkit;
 import javax.swing.JButton;
 import java.awt.*;
 import java.awt.event.*;
-<<<<<<< Updated upstream
+import java.util.ArrayList;
+import java.util.Random;
 import javax.swing.border.LineBorder;
-=======
+
+import javax.swing.border.LineBorder;
+
 import javax.swing.JPanel;
->>>>>>> Stashed changes
+
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -22,60 +26,85 @@ public class Arayüz extends javax.swing.JFrame {
     public static Toolkit kit = Toolkit.getDefaultToolkit();
     public static int EkranX;
     public static int EkranY;
-    private JButton[][] kare;
+    public static JButton[][] JButtonKare;
     public static int tahtaXSayisi;
     public static int tahtaYSayisi;
     ButtonHandler buttonHandler = new ButtonHandler();
-    Container cont;
+    public static Kare[][] kareler;
+
     public Arayüz() {
         initComponents();
         EkranX = (int) kit.getScreenSize().width; //Ekran boyutunun genişliğini alıyoruz...
         EkranY = (int) kit.getScreenSize().height;//Ekran boyutunun yüksekliğini alıyoruz...
         this.setLocation((EkranX - 1050) / 2, (EkranY - 800) / 2);  // Görünüm olarak açılan pencerenin ekranın tam ortasında çıkması için
         this.setSize(1050, 800);
-        
+
     }
 
     public void oyunOlustur() {
         if (Integer.parseInt(tahtaX.getText()) < EkranX - 250 && Integer.parseInt(tahtaY.getText()) < EkranY && !kareKenar.getText().isEmpty()) {
+            oyunAlani.removeAll();
             boyutOrantıla();
-<<<<<<< Updated upstream
-            oyunAlani.setSize(Integer.parseInt(tahtaX.getText()), Integer.parseInt(tahtaY.getText())-40);
-            kontrolAlani.setSize(250, Integer.parseInt(tahtaY.getText())-40);
+            oyunAlani.setSize(Integer.parseInt(tahtaX.getText()), Integer.parseInt(tahtaY.getText()) - 40);
+            kontrolAlani.setSize(250, Integer.parseInt(tahtaY.getText()) - 40);
             this.setSize(250 + Integer.parseInt(tahtaX.getText()), Integer.parseInt(tahtaY.getText()));
-=======
-            oyunAlani.setSize(Integer.parseInt(tahtaX.getText()), Integer.parseInt(tahtaY.getText()));
-            kontrolAlani.setSize(250, Integer.parseInt(tahtaY.getText()));
-            this.setSize(250 + Integer.parseInt(tahtaX.getText()),Integer.parseInt(tahtaY.getText()));
->>>>>>> Stashed changes
             kontrolAlani.setLocation(Integer.parseInt(tahtaX.getText()), 0);
             this.setLocation((EkranX - Integer.parseInt(tahtaX.getText()) - 250) / 2, (EkranY - Integer.parseInt(tahtaY.getText())) / 2);
-           getContentPane().add(oyunAlani);     
-            oyunAlani.setLayout(new GridLayout(tahtaXSayisi, tahtaYSayisi));
-            kare = new JButton[tahtaXSayisi][tahtaYSayisi];
+            oyunAlani.setLayout(new GridLayout(tahtaYSayisi, tahtaXSayisi));
+            JButtonKare = new JButton[tahtaYSayisi][tahtaXSayisi];
+            kareler = new Kare[tahtaYSayisi][tahtaXSayisi];
             for (int i = 0; i < tahtaYSayisi; i++) {
                 for (int j = 0; j < tahtaXSayisi; j++) {
-                    kare[i][j] = new JButton();
-<<<<<<< Updated upstream
-                    LineBorder border = new LineBorder(Color.BLACK, 1);
-                    kare[i][j].setBorder(border);
-                    if ((i + j) % 2 != 0) {
-                        kare[i][j].setBackground(Color.black);
-                    }
-                    oyunAlani.add(kare[i][j],BorderLayout.CENTER);
-=======
-                    
-                    oyunAlani.add(kare[i][j]);
->>>>>>> Stashed changes
-
+                    JButtonKare[i][j] = new JButton();
+                    kareler[i][j] = new Kare();
+                    oyunAlani.add(JButtonKare[i][j], BorderLayout.CENTER);
+                    kareler[i][j].kullanici = " ";
                 }
 
             }
-<<<<<<< Updated upstream
-            //setResizable(false);
-=======
-            
->>>>>>> Stashed changes
+
+            System.out.println(tahtaXSayisi + " " + tahtaYSayisi);
+            kareler[0][0].kullanici = "A";
+            JButtonKare[0][0].setBackground(Color.red);
+            JButtonKare[0][0].setText("A");
+            kareler[0][tahtaXSayisi - 1].kullanici = "B";
+            JButtonKare[0][tahtaXSayisi - 1].setBackground(Color.black);
+            JButtonKare[0][tahtaXSayisi - 1].setText("B");
+            kareler[tahtaYSayisi - 1][tahtaXSayisi - 1].kullanici = "C";
+            JButtonKare[tahtaYSayisi - 1][tahtaXSayisi - 1].setBackground(Color.blue);
+            JButtonKare[tahtaYSayisi - 1][tahtaXSayisi - 1].setText("C");
+            kareler[tahtaYSayisi - 1][0].kullanici = "D";
+            JButtonKare[tahtaYSayisi - 1][0].setBackground(Color.GREEN);
+            JButtonKare[tahtaYSayisi - 1][0].setText("D");
+
+            Random rnd = new Random();
+            int x, y, rndAltinMiktari;
+            int uretilenaltin = 0;
+            int gizliAltin = tahtaXSayisi * tahtaYSayisi * 20 / 100 * 10 / 100;
+            if(gizliAltin==0)
+                gizliAltin=1;
+            System.out.println(((tahtaXSayisi * tahtaYSayisi) * 20) / 100);
+            while (uretilenaltin < tahtaXSayisi * tahtaYSayisi * 20 / 100) {
+                x = rnd.nextInt(tahtaYSayisi);
+                y = rnd.nextInt(tahtaXSayisi);
+                System.out.println(x + "batu" + y);
+                rndAltinMiktari = 5 + rnd.nextInt(5) * 4;
+                if(gizliAltin!=0 && kareler[x][y].kullanici == " " && kareler[x][y].altinMiktari == 0){
+                    gizliAltin--;
+                    uretilenaltin++;                    
+                    kareler[x][y].altinMiktari = rndAltinMiktari;
+                    kareler[x][y].gizli=true;
+                    JButtonKare[x][y].setBackground(Color.pink);
+                   // int konum[2] = {0,0};
+                }
+                if (kareler[x][y].kullanici == " " && kareler[x][y].altinMiktari == 0) {
+                    System.out.println("mubb" + uretilenaltin);
+                    JButtonKare[x][y].setBackground(Color.yellow);
+                    kareler[x][y].altinMiktari = rndAltinMiktari;
+                    uretilenaltin++;
+                }
+            }
+            setResizable(false);
             setVisible(true);
         }
 
@@ -112,7 +141,7 @@ public class Arayüz extends javax.swing.JFrame {
         getContentPane().setLayout(null);
 
         oyunAlani.setBackground(new java.awt.Color(255, 102, 102));
-        oyunAlani.setLayout(new java.awt.GridLayout());
+        oyunAlani.setLayout(null);
         getContentPane().add(oyunAlani);
         oyunAlani.setBounds(0, 0, 800, 800);
 
@@ -126,7 +155,7 @@ public class Arayüz extends javax.swing.JFrame {
             }
         });
         kontrolAlani.add(tahtaX);
-        tahtaX.setBounds(10, 0, 60, 22);
+        tahtaX.setBounds(10, 0, 60, 35);
 
         tahtaY.setText("800");
         tahtaY.addActionListener(new java.awt.event.ActionListener() {
@@ -135,7 +164,7 @@ public class Arayüz extends javax.swing.JFrame {
             }
         });
         kontrolAlani.add(tahtaY);
-        tahtaY.setBounds(110, 0, 80, 22);
+        tahtaY.setBounds(110, 0, 80, 35);
 
         basla.setText("BAŞLA");
         basla.addActionListener(new java.awt.event.ActionListener() {
@@ -144,7 +173,7 @@ public class Arayüz extends javax.swing.JFrame {
             }
         });
         kontrolAlani.add(basla);
-        basla.setBounds(80, 510, 69, 25);
+        basla.setBounds(80, 510, 54, 28);
 
         kareKenar.setText("20");
         kareKenar.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -157,11 +186,11 @@ public class Arayüz extends javax.swing.JFrame {
 
         jLabel2.setText("X");
         kontrolAlani.add(jLabel2);
-        jLabel2.setBounds(90, 0, 41, 16);
+        jLabel2.setBounds(90, 0, 41, 18);
 
         kareText.setText("Karenin Boyutu:");
         kontrolAlani.add(kareText);
-        kareText.setBounds(10, 50, 180, 16);
+        kareText.setBounds(10, 50, 180, 18);
 
         getContentPane().add(kontrolAlani);
         kontrolAlani.setBounds(800, 0, 250, 800);
