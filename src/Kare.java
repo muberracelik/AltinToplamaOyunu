@@ -10,7 +10,7 @@
  */
 public class Kare {
     int altinMiktari=0;
-    String kullanici=" ";
     boolean gizli=false;
+    int konum[]= new int[2];
     
 }

@@ -3,13 +3,18 @@ import java.awt.Toolkit;
 import javax.swing.JButton;
 import java.awt.*;
 import java.awt.event.*;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.border.LineBorder;
 
 import javax.swing.border.LineBorder;
 
 import javax.swing.JPanel;
+import javax.swing.SwingWorker;
+import javax.swing.Timer;
 
 
 /*
@@ -21,6 +26,8 @@ import javax.swing.JPanel;
  *
  * @author Lenovo
  */
+
+
 public class Arayüz extends javax.swing.JFrame {
 
     public static Toolkit kit = Toolkit.getDefaultToolkit();
@@ -31,6 +38,12 @@ public class Arayüz extends javax.swing.JFrame {
     public static int tahtaYSayisi;
     ButtonHandler buttonHandler = new ButtonHandler();
     public static Kare[][] kareler;
+    public static ArrayList<Kare> altinlar = new ArrayList<>();
+
+    Oyuncu oyuncuA = new Oyuncu();
+    Oyuncu oyuncuB = new Oyuncu();
+    Oyuncu oyuncuC = new Oyuncu();
+    Oyuncu oyuncuD = new Oyuncu();
 
     public Arayüz() {
         initComponents();
@@ -42,6 +55,8 @@ public class Arayüz extends javax.swing.JFrame {
     }
 
     public void oyunOlustur() {
+
+        Random rnd = new Random();
         if (Integer.parseInt(tahtaX.getText()) < EkranX - 250 && Integer.parseInt(tahtaY.getText()) < EkranY && !kareKenar.getText().isEmpty()) {
             oyunAlani.removeAll();
             boyutOrantıla();
@@ -53,60 +68,56 @@ public class Arayüz extends javax.swing.JFrame {
             oyunAlani.setLayout(new GridLayout(tahtaYSayisi, tahtaXSayisi));
             JButtonKare = new JButton[tahtaYSayisi][tahtaXSayisi];
             kareler = new Kare[tahtaYSayisi][tahtaXSayisi];
+
             for (int i = 0; i < tahtaYSayisi; i++) {
                 for (int j = 0; j < tahtaXSayisi; j++) {
                     JButtonKare[i][j] = new JButton();
                     kareler[i][j] = new Kare();
                     oyunAlani.add(JButtonKare[i][j], BorderLayout.CENTER);
-                    kareler[i][j].kullanici = " ";
                 }
 
             }
-
-            System.out.println(tahtaXSayisi + " " + tahtaYSayisi);
-            kareler[0][0].kullanici = "A";
-            JButtonKare[0][0].setBackground(Color.red);
-            JButtonKare[0][0].setText("A");
-            kareler[0][tahtaXSayisi - 1].kullanici = "B";
-            JButtonKare[0][tahtaXSayisi - 1].setBackground(Color.black);
-            JButtonKare[0][tahtaXSayisi - 1].setText("B");
-            kareler[tahtaYSayisi - 1][tahtaXSayisi - 1].kullanici = "C";
-            JButtonKare[tahtaYSayisi - 1][tahtaXSayisi - 1].setBackground(Color.blue);
-            JButtonKare[tahtaYSayisi - 1][tahtaXSayisi - 1].setText("C");
-            kareler[tahtaYSayisi - 1][0].kullanici = "D";
-            JButtonKare[tahtaYSayisi - 1][0].setBackground(Color.GREEN);
-            JButtonKare[tahtaYSayisi - 1][0].setText("D");
-
-            Random rnd = new Random();
+            oyuncuOlustur();
             int x, y, rndAltinMiktari;
             int uretilenaltin = 0;
-            int gizliAltin = tahtaXSayisi * tahtaYSayisi * 20 / 100 * 10 / 100;
-            if(gizliAltin==0)
-                gizliAltin=1;
-            System.out.println(((tahtaXSayisi * tahtaYSayisi) * 20) / 100);
-            while (uretilenaltin < tahtaXSayisi * tahtaYSayisi * 20 / 100) {
+            int gizliAltin = tahtaXSayisi * tahtaYSayisi * Integer.parseInt(altinOrani.getText()) / 100 * Integer.parseInt(gizliAltinOrani.getText()) / 100;
+            if (gizliAltin == 0) {
+                gizliAltin = 1;
+            }
+            // System.out.println(((tahtaXSayisi * tahtaYSayisi) * 20) / 100);
+            while (uretilenaltin < tahtaXSayisi * tahtaYSayisi * Integer.parseInt(altinOrani.getText()) / 100) {
                 x = rnd.nextInt(tahtaYSayisi);
                 y = rnd.nextInt(tahtaXSayisi);
-                System.out.println(x + "batu" + y);
-                rndAltinMiktari = 5 + rnd.nextInt(5) * 4;
-                if(gizliAltin!=0 && kareler[x][y].kullanici == " " && kareler[x][y].altinMiktari == 0){
+                rndAltinMiktari = 5 + rnd.nextInt(4) * 5;
+                if (gizliAltin != 0 && ((x != 0 && y != 0) && (x != tahtaYSayisi - 1 && y != 0) && (x != 0 && y != tahtaXSayisi - 1) && (x != tahtaYSayisi - 1 && y != tahtaXSayisi)) && kareler[x][y].altinMiktari == 0) { // gizli altınlar için
                     gizliAltin--;
-                    uretilenaltin++;                    
+                    uretilenaltin++;
                     kareler[x][y].altinMiktari = rndAltinMiktari;
-                    kareler[x][y].gizli=true;
+                    JButtonKare[x][y].setText(String.valueOf(kareler[x][y].altinMiktari));
+                    kareler[x][y].gizli = true;
+                    kareler[x][y].konum[0] = x;
+                    kareler[x][y].konum[1] = y;
+                    altinlar.add(kareler[x][y]);
                     JButtonKare[x][y].setBackground(Color.pink);
-                   // int konum[2] = {0,0};
+                    System.out.println(x + "mb " + y);
+                    continue;
                 }
-                if (kareler[x][y].kullanici == " " && kareler[x][y].altinMiktari == 0) {
-                    System.out.println("mubb" + uretilenaltin);
+                if (((x != 0 && y != 0) && (x != tahtaYSayisi - 1 && y != 0) && (x != 0 && y != tahtaXSayisi - 1) && (x != tahtaYSayisi - 1 && y != tahtaXSayisi)) && kareler[x][y].altinMiktari == 0) { // normal altınlar için
+
                     JButtonKare[x][y].setBackground(Color.yellow);
                     kareler[x][y].altinMiktari = rndAltinMiktari;
+                    JButtonKare[x][y].setText(String.valueOf(kareler[x][y].altinMiktari));
+                    kareler[x][y].konum[0] = x;
+                    kareler[x][y].konum[1] = y;
+                    altinlar.add(kareler[x][y]);
                     uretilenaltin++;
+                    System.out.println(x + "mb " + y);
                 }
             }
             setResizable(false);
             setVisible(true);
         }
+        AOyna();
 
     }
 
@@ -115,6 +126,107 @@ public class Arayüz extends javax.swing.JFrame {
         tahtaY.setText(String.valueOf(Integer.parseInt(tahtaY.getText()) / Integer.parseInt(kareKenar.getText()) * Integer.parseInt(kareKenar.getText())));
         tahtaXSayisi = Integer.parseInt(tahtaX.getText()) / Integer.parseInt(kareKenar.getText());
         tahtaYSayisi = Integer.parseInt(tahtaY.getText()) / Integer.parseInt(kareKenar.getText());
+
+    }
+
+    public void oyuncuOlustur() {
+        JButtonKare[0][0].setBackground(Color.red);
+        JButtonKare[0][0].setText("A");
+        oyuncuA.ad = "A";
+        oyuncuA.mevcutAltinMiktari = Integer.parseInt(mevcutAltin.getText());
+        oyuncuA.AktifKonumu[0] = 0;
+        oyuncuA.AktifKonumu[1] = 0;
+
+        JButtonKare[0][tahtaXSayisi - 1].setBackground(Color.black);
+        JButtonKare[0][tahtaXSayisi - 1].setText("B");
+        oyuncuB.ad = "B";
+        oyuncuB.mevcutAltinMiktari = Integer.parseInt(mevcutAltin.getText());
+
+        JButtonKare[tahtaYSayisi - 1][tahtaXSayisi - 1].setBackground(Color.blue);
+        JButtonKare[tahtaYSayisi - 1][tahtaXSayisi - 1].setText("C");
+        oyuncuC.ad = "C";
+        oyuncuC.mevcutAltinMiktari = Integer.parseInt(mevcutAltin.getText());
+
+        JButtonKare[tahtaYSayisi - 1][0].setBackground(Color.GREEN);
+        JButtonKare[tahtaYSayisi - 1][0].setText("D");
+        oyuncuD.ad = "D";
+        oyuncuD.mevcutAltinMiktari = Integer.parseInt(mevcutAltin.getText());
+
+    }
+
+    public void AOyna() {
+        int enkAdim = Integer.MAX_VALUE;
+        int xuzaklik = 0, yuzaklik = 0;
+        
+        for (int i = 0; i < altinlar.size(); i++) {
+            System.out.println(altinlar.get(i).konum[0] + " " + altinlar.get(i).konum[1]);
+            int tempxuzaklik, tempyuzaklik;
+            tempxuzaklik = oyuncuA.AktifKonumu[0] - altinlar.get(i).konum[0];
+            tempyuzaklik = oyuncuA.AktifKonumu[1] - altinlar.get(i).konum[1];
+
+            if (Math.abs(tempxuzaklik + tempyuzaklik) < enkAdim) {
+                enkAdim = Math.abs(tempxuzaklik + tempyuzaklik);
+                xuzaklik = tempxuzaklik;
+                yuzaklik = tempyuzaklik;
+            }
+        }
+        System.out.println(xuzaklik + " " + yuzaklik + " " + enkAdim);
+        int adim = 0;
+
+        Timer timer = null;
+        for (int i = 0; i < Math.abs(xuzaklik); i++) {
+            if (adim < 3) {
+
+                adim++;
+                int eksilecek = Integer.signum(xuzaklik);
+
+                timer = new Timer(2000, new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setBackground(Color.WHITE);
+                        JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setText("");
+                        oyuncuA.AktifKonumu[0] = oyuncuA.AktifKonumu[0] - eksilecek; // A için x in konumunu arttırdık veya azalttık.
+                        JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setBackground(Color.RED);
+                        JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setText("A");
+                        JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setBackground(Color.RED);
+                        JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setText("A");
+                        repaint();
+                    }
+                    
+                });
+
+                timer.setRepeats(false);
+               
+                timer.start();
+
+            }
+
+        }
+        for (int i = 0; i < Math.abs(yuzaklik); i++) {
+            if (adim < 3) {
+                adim++;
+                int eksilecek = Integer.signum(yuzaklik);
+
+                timer = new Timer(2000, new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setBackground(Color.WHITE);
+                        JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setText("");
+                        oyuncuA.AktifKonumu[1] = oyuncuA.AktifKonumu[1] - eksilecek; // A için x in konumunu arttırdık veya azalttık.
+                        JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setBackground(Color.RED);
+                        JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setText("A");
+                        JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setBackground(Color.RED);
+                        JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setText("A");
+
+                        repaint();
+
+                    }
+                });
+
+                timer.setRepeats(false);
+                
+                timer.start();
+               
+            }
+        }
 
     }
 
@@ -133,8 +245,25 @@ public class Arayüz extends javax.swing.JFrame {
         tahtaY = new javax.swing.JTextField();
         basla = new javax.swing.JButton();
         kareKenar = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        kareText = new javax.swing.JLabel();
+        carpiText = new javax.swing.JLabel();
+        kareBoyutText = new javax.swing.JLabel();
+        mevcutAltin = new javax.swing.JTextField();
+        altinOrani = new javax.swing.JTextField();
+        gizliAltinOrani = new javax.swing.JTextField();
+        adimSayisi = new javax.swing.JTextField();
+        DHedefMaaliyet = new javax.swing.JTextField();
+        DHamleMaaliyet = new javax.swing.JTextField();
+        BHedefMaaliyet = new javax.swing.JTextField();
+        CHedefMaaliyet = new javax.swing.JTextField();
+        AHedefMaaliyet1 = new javax.swing.JTextField();
+        AHamleMaaliyet = new javax.swing.JTextField();
+        BHamleMaaliyet1 = new javax.swing.JTextField();
+        CHamleMaaliyet1 = new javax.swing.JTextField();
+        dikdötgenBoyutText = new javax.swing.JLabel();
+        mevcutAltinText = new javax.swing.JLabel();
+        altinOraniText = new javax.swing.JLabel();
+        gizliAltinOraniText = new javax.swing.JLabel();
+        adimSayisiText = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setSize(new java.awt.Dimension(800, 800));
@@ -155,7 +284,7 @@ public class Arayüz extends javax.swing.JFrame {
             }
         });
         kontrolAlani.add(tahtaX);
-        tahtaX.setBounds(10, 0, 60, 35);
+        tahtaX.setBounds(120, 0, 50, 30);
 
         tahtaY.setText("800");
         tahtaY.addActionListener(new java.awt.event.ActionListener() {
@@ -164,7 +293,7 @@ public class Arayüz extends javax.swing.JFrame {
             }
         });
         kontrolAlani.add(tahtaY);
-        tahtaY.setBounds(110, 0, 80, 35);
+        tahtaY.setBounds(200, 0, 50, 30);
 
         basla.setText("BAŞLA");
         basla.addActionListener(new java.awt.event.ActionListener() {
@@ -182,15 +311,93 @@ public class Arayüz extends javax.swing.JFrame {
             }
         });
         kontrolAlani.add(kareKenar);
-        kareKenar.setBounds(110, 40, 80, 30);
+        kareKenar.setBounds(130, 40, 40, 30);
 
-        jLabel2.setText("X");
-        kontrolAlani.add(jLabel2);
-        jLabel2.setBounds(90, 0, 41, 18);
+        carpiText.setText("X");
+        kontrolAlani.add(carpiText);
+        carpiText.setBounds(180, 10, 30, 18);
 
-        kareText.setText("Karenin Boyutu:");
-        kontrolAlani.add(kareText);
-        kareText.setBounds(10, 50, 180, 18);
+        kareBoyutText.setText("Karenin Boyutu:");
+        kontrolAlani.add(kareBoyutText);
+        kareBoyutText.setBounds(10, 50, 130, 18);
+
+        mevcutAltin.setText("200");
+        kontrolAlani.add(mevcutAltin);
+        mevcutAltin.setBounds(120, 80, 50, 30);
+
+        altinOrani.setText("20");
+        kontrolAlani.add(altinOrani);
+        altinOrani.setBounds(120, 120, 40, 30);
+
+        gizliAltinOrani.setText("10");
+        gizliAltinOrani.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                gizliAltinOraniActionPerformed(evt);
+            }
+        });
+        kontrolAlani.add(gizliAltinOrani);
+        gizliAltinOrani.setBounds(120, 160, 40, 30);
+
+        adimSayisi.setText("3");
+        adimSayisi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adimSayisiActionPerformed(evt);
+            }
+        });
+        kontrolAlani.add(adimSayisi);
+        adimSayisi.setBounds(100, 200, 30, 30);
+
+        DHedefMaaliyet.setText("D Oyuncusu hedef maaliyeti");
+        kontrolAlani.add(DHedefMaaliyet);
+        DHedefMaaliyet.setBounds(10, 440, 120, 35);
+
+        DHamleMaaliyet.setText("D Oyuncusu hamle maaliyeti");
+        kontrolAlani.add(DHamleMaaliyet);
+        DHamleMaaliyet.setBounds(130, 440, 120, 35);
+
+        BHedefMaaliyet.setText("B Oyuncusu hedef maaliyeti");
+        kontrolAlani.add(BHedefMaaliyet);
+        BHedefMaaliyet.setBounds(10, 350, 120, 35);
+
+        CHedefMaaliyet.setText("C Oyuncusu hedef maaliyeti");
+        kontrolAlani.add(CHedefMaaliyet);
+        CHedefMaaliyet.setBounds(10, 400, 120, 35);
+
+        AHedefMaaliyet1.setText("A Oyuncusu hedef maaliyeti");
+        kontrolAlani.add(AHedefMaaliyet1);
+        AHedefMaaliyet1.setBounds(10, 300, 120, 35);
+
+        AHamleMaaliyet.setText("A Oyuncusu hamle maaliyeti");
+        kontrolAlani.add(AHamleMaaliyet);
+        AHamleMaaliyet.setBounds(130, 300, 120, 35);
+
+        BHamleMaaliyet1.setText("B Oyuncusu hamle maaliyeti");
+        kontrolAlani.add(BHamleMaaliyet1);
+        BHamleMaaliyet1.setBounds(130, 350, 120, 35);
+
+        CHamleMaaliyet1.setText("C Oyuncusu hamle maaliyeti");
+        kontrolAlani.add(CHamleMaaliyet1);
+        CHamleMaaliyet1.setBounds(130, 400, 120, 35);
+
+        dikdötgenBoyutText.setText("Tahta Boyutu :");
+        kontrolAlani.add(dikdötgenBoyutText);
+        dikdötgenBoyutText.setBounds(10, 10, 110, 18);
+
+        mevcutAltinText.setText("Mevcut Altın");
+        kontrolAlani.add(mevcutAltinText);
+        mevcutAltinText.setBounds(10, 90, 100, 18);
+
+        altinOraniText.setText("Altın Oranı");
+        kontrolAlani.add(altinOraniText);
+        altinOraniText.setBounds(10, 130, 90, 18);
+
+        gizliAltinOraniText.setText("Gizli Altın Oranı");
+        kontrolAlani.add(gizliAltinOraniText);
+        gizliAltinOraniText.setBounds(10, 170, 110, 18);
+
+        adimSayisiText.setText("Adım Sayısı");
+        kontrolAlani.add(adimSayisiText);
+        adimSayisiText.setBounds(10, 210, 100, 18);
 
         getContentPane().add(kontrolAlani);
         kontrolAlani.setBounds(800, 0, 250, 800);
@@ -214,6 +421,14 @@ public class Arayüz extends javax.swing.JFrame {
     private void kareKenarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kareKenarKeyTyped
 
     }//GEN-LAST:event_kareKenarKeyTyped
+
+    private void gizliAltinOraniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gizliAltinOraniActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_gizliAltinOraniActionPerformed
+
+    private void adimSayisiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adimSayisiActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_adimSayisiActionPerformed
 
     /**
      * @param args the command line arguments
@@ -245,18 +460,37 @@ public class Arayüz extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new Arayüz().setVisible(true);
+
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField AHamleMaaliyet;
+    private javax.swing.JTextField AHedefMaaliyet1;
+    private javax.swing.JTextField BHamleMaaliyet1;
+    private javax.swing.JTextField BHedefMaaliyet;
+    private javax.swing.JTextField CHamleMaaliyet1;
+    private javax.swing.JTextField CHedefMaaliyet;
+    private javax.swing.JTextField DHamleMaaliyet;
+    private javax.swing.JTextField DHedefMaaliyet;
+    private javax.swing.JTextField adimSayisi;
+    private javax.swing.JLabel adimSayisiText;
+    private javax.swing.JTextField altinOrani;
+    private javax.swing.JLabel altinOraniText;
     private javax.swing.JButton basla;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel carpiText;
+    private javax.swing.JLabel dikdötgenBoyutText;
+    private javax.swing.JTextField gizliAltinOrani;
+    private javax.swing.JLabel gizliAltinOraniText;
+    private javax.swing.JLabel kareBoyutText;
     private javax.swing.JTextField kareKenar;
-    private javax.swing.JLabel kareText;
     private javax.swing.JPanel kontrolAlani;
+    private javax.swing.JTextField mevcutAltin;
+    private javax.swing.JLabel mevcutAltinText;
     private javax.swing.JPanel oyunAlani;
     private javax.swing.JTextField tahtaX;
     private javax.swing.JTextField tahtaY;
