@@ -16,5 +16,6 @@ public class Oyuncu {
     int harcananAltinMiktari=0;
     int toplananAltinMiktari=0;
     int kasadakiAltinMiktari=0;
-    int hedefAltinKonum[];
+    int hedefAltinKonum[]=new int[2];
+    
 }
