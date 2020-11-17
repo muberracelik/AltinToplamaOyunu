@@ -1,20 +1,8 @@
-
 import java.awt.Toolkit;
 import javax.swing.JButton;
 import java.awt.*;
-import java.awt.event.*;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.border.LineBorder;
-
-import javax.swing.border.LineBorder;
-
-import javax.swing.JPanel;
-import javax.swing.SwingWorker;
-import javax.swing.Timer;
 
 
 /*
@@ -26,8 +14,6 @@ import javax.swing.Timer;
  *
  * @author Lenovo
  */
-
-
 public class Arayüz extends javax.swing.JFrame {
 
     public static Toolkit kit = Toolkit.getDefaultToolkit();
@@ -55,7 +41,6 @@ public class Arayüz extends javax.swing.JFrame {
     }
 
     public void oyunOlustur() {
-
         Random rnd = new Random();
         if (Integer.parseInt(tahtaX.getText()) < EkranX - 250 && Integer.parseInt(tahtaY.getText()) < EkranY && !kareKenar.getText().isEmpty()) {
             oyunAlani.removeAll();
@@ -117,8 +102,6 @@ public class Arayüz extends javax.swing.JFrame {
             setResizable(false);
             setVisible(true);
         }
-        AOyna();
-
     }
 
     public void boyutOrantıla() {
@@ -157,7 +140,7 @@ public class Arayüz extends javax.swing.JFrame {
     public void AOyna() {
         int enkAdim = Integer.MAX_VALUE;
         int xuzaklik = 0, yuzaklik = 0;
-        
+
         for (int i = 0; i < altinlar.size(); i++) {
             System.out.println(altinlar.get(i).konum[0] + " " + altinlar.get(i).konum[1]);
             int tempxuzaklik, tempyuzaklik;
@@ -170,33 +153,31 @@ public class Arayüz extends javax.swing.JFrame {
                 yuzaklik = tempyuzaklik;
             }
         }
-        System.out.println(xuzaklik + " " + yuzaklik + " " + enkAdim);
         int adim = 0;
 
-        Timer timer = null;
         for (int i = 0; i < Math.abs(xuzaklik); i++) {
             if (adim < 3) {
 
                 adim++;
                 int eksilecek = Integer.signum(xuzaklik);
+                int sleep = adim * 1500;
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(sleep);
+                            JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setBackground(Color.WHITE);
+                            JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setText("");
+                            oyuncuA.AktifKonumu[0] = oyuncuA.AktifKonumu[0] - eksilecek; // A için x in konumunu arttırdık veya azalttık.
+                            JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setBackground(Color.RED);
+                            JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setText("A");
+                            JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setBackground(Color.RED);
+                            JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setText("A");
+                        } catch (InterruptedException e) {
+                        }
 
-                timer = new Timer(2000, new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setBackground(Color.WHITE);
-                        JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setText("");
-                        oyuncuA.AktifKonumu[0] = oyuncuA.AktifKonumu[0] - eksilecek; // A için x in konumunu arttırdık veya azalttık.
-                        JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setBackground(Color.RED);
-                        JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setText("A");
-                        JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setBackground(Color.RED);
-                        JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setText("A");
-                        repaint();
                     }
-                    
-                });
-
-                timer.setRepeats(false);
-               
-                timer.start();
+                }.start();
 
             }
 
@@ -204,27 +185,25 @@ public class Arayüz extends javax.swing.JFrame {
         for (int i = 0; i < Math.abs(yuzaklik); i++) {
             if (adim < 3) {
                 adim++;
+                int sleep = adim * 1500;
                 int eksilecek = Integer.signum(yuzaklik);
-
-                timer = new Timer(2000, new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setBackground(Color.WHITE);
-                        JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setText("");
-                        oyuncuA.AktifKonumu[1] = oyuncuA.AktifKonumu[1] - eksilecek; // A için x in konumunu arttırdık veya azalttık.
-                        JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setBackground(Color.RED);
-                        JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setText("A");
-                        JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setBackground(Color.RED);
-                        JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setText("A");
-
-                        repaint();
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(sleep);
+                            JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setBackground(Color.WHITE);
+                            JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setText("");
+                            oyuncuA.AktifKonumu[1] = oyuncuA.AktifKonumu[1] - eksilecek; // A için x in konumunu arttırdık veya azalttık.
+                            JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setBackground(Color.RED);
+                            JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setText("A");
+                            JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setBackground(Color.RED);
+                            JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setText("A");
+                        } catch (InterruptedException e) {
+                        }
 
                     }
-                });
-
-                timer.setRepeats(false);
-                
-                timer.start();
-               
+                }.start();
             }
         }
 
@@ -406,8 +385,8 @@ public class Arayüz extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void baslaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_baslaActionPerformed
-        // TODO add your handling code here:
         oyunOlustur();
+        AOyna();
     }//GEN-LAST:event_baslaActionPerformed
 
     private void tahtaYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tahtaYActionPerformed
