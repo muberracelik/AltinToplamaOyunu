@@ -41,8 +41,9 @@ public class Arayüz extends javax.swing.JFrame {
     }
 
     public void oyunOlustur() {
-        Random rnd = new Random();
-        if (Integer.parseInt(tahtaX.getText()) < EkranX - 250 && Integer.parseInt(tahtaY.getText()) < EkranY && !kareKenar.getText().isEmpty()) {
+        if (Integer.parseInt(tahtaX.getText()) < EkranX - 250 && Integer.parseInt(tahtaY.getText()) < EkranY && !kareKenar.getText().isEmpty()) {            
+            Random rnd = new Random();
+            altinlar.clear();
             oyunAlani.removeAll();
             boyutOrantıla();
             oyunAlani.setSize(Integer.parseInt(tahtaX.getText()), Integer.parseInt(tahtaY.getText()) - 40);
@@ -84,7 +85,6 @@ public class Arayüz extends javax.swing.JFrame {
                     kareler[x][y].konum[1] = y;
                     altinlar.add(kareler[x][y]);
                     JButtonKare[x][y].setBackground(Color.pink);
-                    System.out.println(x + "mb " + y);
                     continue;
                 }
                 if (((x != 0 && y != 0) && (x != tahtaYSayisi - 1 && y != 0) && (x != 0 && y != tahtaXSayisi - 1) && (x != tahtaYSayisi - 1 && y != tahtaXSayisi)) && kareler[x][y].altinMiktari == 0) { // normal altınlar için
@@ -96,7 +96,6 @@ public class Arayüz extends javax.swing.JFrame {
                     kareler[x][y].konum[1] = y;
                     altinlar.add(kareler[x][y]);
                     uretilenaltin++;
-                    System.out.println(x + "mb " + y);
                 }
             }
             setResizable(false);
@@ -140,9 +139,8 @@ public class Arayüz extends javax.swing.JFrame {
     public void AOyna() {
         int enkAdim = Integer.MAX_VALUE;
         int xuzaklik = 0, yuzaklik = 0;
-
+        int silinecekAltinIndex=0;
         for (int i = 0; i < altinlar.size(); i++) {
-            System.out.println(altinlar.get(i).konum[0] + " " + altinlar.get(i).konum[1]);
             int tempxuzaklik, tempyuzaklik;
             tempxuzaklik = oyuncuA.AktifKonumu[0] - altinlar.get(i).konum[0];
             tempyuzaklik = oyuncuA.AktifKonumu[1] - altinlar.get(i).konum[1];
@@ -151,10 +149,14 @@ public class Arayüz extends javax.swing.JFrame {
                 enkAdim = Math.abs(tempxuzaklik + tempyuzaklik);
                 xuzaklik = tempxuzaklik;
                 yuzaklik = tempyuzaklik;
+                silinecekAltinIndex=i;
             }
         }
         int adim = 0;
-
+           System.out.println(xuzaklik+" "+yuzaklik);
+        if(Math.abs(yuzaklik)+Math.abs(xuzaklik)<=3){//eğer altın a kullanıcısının adımları içerisinde ise altını alacağı için listeden silmemiz gerekir
+            altinlar.remove(silinecekAltinIndex);
+        }
         for (int i = 0; i < Math.abs(xuzaklik); i++) {
             if (adim < 3) {
 
