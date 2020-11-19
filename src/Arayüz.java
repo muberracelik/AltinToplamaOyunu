@@ -4,6 +4,8 @@ import javax.swing.JButton;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /*
@@ -113,12 +115,12 @@ public class Arayüz extends javax.swing.JFrame {
     }
 
     public void oyuncuOlustur() {
-        JButtonKare[6][3].setBackground(Color.red);
-        JButtonKare[6][3].setText("A");
+        JButtonKare[0][0].setBackground(Color.red);
+        JButtonKare[0][0].setText("A");
         oyuncuA.ad = "A";
         oyuncuA.mevcutAltinMiktari = Integer.parseInt(mevcutAltin.getText());
-        oyuncuA.AktifKonumu[0] = 6;
-        oyuncuA.AktifKonumu[1] = 3;
+        oyuncuA.AktifKonumu[0] = 0;
+        oyuncuA.AktifKonumu[1] = 0;
         oyuncuA.adimSayisi = 0;
         oyuncuA.harcananAltinMiktari = 0;
         oyuncuA.kasadakiAltinMiktari = 0;
@@ -135,7 +137,7 @@ public class Arayüz extends javax.swing.JFrame {
         oyuncuB.kasadakiAltinMiktari = 0;
         oyuncuB.toplananAltinMiktari = 0;
 
-        JButtonKare[tahtaYSayisi - 1][tahtaXSayisi - 1].setBackground(Color.blue);
+        JButtonKare[tahtaYSayisi - 1][tahtaXSayisi - 1].setBackground(Color.BLUE);
         JButtonKare[tahtaYSayisi - 1][tahtaXSayisi - 1].setText("C");
         oyuncuC.ad = "C";
         oyuncuC.mevcutAltinMiktari = Integer.parseInt(mevcutAltin.getText());
@@ -188,7 +190,7 @@ public class Arayüz extends javax.swing.JFrame {
         if (Math.abs(yuzaklik) + Math.abs(xuzaklik) <= 3) {//eğer altın a kullanıcısının adımları içerisinde ise altını alacağı için listeden silmemiz gerekir
             altinlar.remove(silinecekAltinIndex);
         }
-        hareketEttir(xuzaklik, yuzaklik, adim, oyuncuA,"A",Color.RED);
+        hareketEttir(xuzaklik, yuzaklik, adim, oyuncuA, "A", Color.RED);
         //System.out.println(oyuncuA.AktifKonumu[0]+"m "+oyuncuA.AktifKonumu[1]+"u "+oyuncuA.hedefAltinKonum[0]+" b"+oyuncuA.hedefAltinKonum[1]);
         oyuncuA.harcananAltinMiktari += Integer.parseInt(AHamleMaaliyet.getText()) * adim + Integer.parseInt(AHedefMaaliyet1.getText());
         oyuncuA.mevcutAltinMiktari = oyuncuA.mevcutAltinMiktari - oyuncuA.harcananAltinMiktari;
@@ -234,7 +236,7 @@ public class Arayüz extends javax.swing.JFrame {
         if (Math.abs(yuzaklik) + Math.abs(xuzaklik) <= 3) {//eğer altın a kullanıcısının adımları içerisinde ise altını alacağı için listeden silmemiz gerekir
             altinlar.remove(silinecekAltinIndex);
         }
-        hareketEttir(xuzaklik, yuzaklik, adim, oyuncuB,"B",Color.ORANGE);
+        hareketEttir(xuzaklik, yuzaklik, adim, oyuncuB, "B", Color.ORANGE);
 
         //System.out.println(oyuncuB.AktifKonumu[0]+"m "+oyuncuB.AktifKonumu[1]+"u "+oyuncuB.hedefAltinKonum[0]+" b"+oyuncuB.hedefAltinKonum[1]);
         oyuncuB.harcananAltinMiktari += Integer.parseInt(AHamleMaaliyet.getText()) * adim + Integer.parseInt(AHedefMaaliyet1.getText());
@@ -248,10 +250,65 @@ public class Arayüz extends javax.swing.JFrame {
 
         System.out.println(
                 "harcanan:" + oyuncuB.harcananAltinMiktari + " kasadakiAltın" + oyuncuB.kasadakiAltinMiktari + " Mevcut altın" + oyuncuB.mevcutAltinMiktari + "toplanan altın" + oyuncuB.toplananAltinMiktari);
+       
+       
+        
+    }
+
+    public void COyna() {
+        int enkMaliyet = Integer.MIN_VALUE;
+        int enkAdim = Integer.MAX_VALUE;
+        int xuzaklik = 0, yuzaklik = 0;
+        int silinecekAltinIndex = 0;
+        int hedefAltinx = 0, hedefAltiny = 0;
+        for (int i = 0; i < altinlar.size(); i++) {
+            int tempxuzaklik, tempyuzaklik;
+            tempxuzaklik = oyuncuC.AktifKonumu[0] - altinlar.get(i).konum[0];
+            tempyuzaklik = oyuncuC.AktifKonumu[1] - altinlar.get(i).konum[1];
+           if(altinlar.get(i).gizli==true){
+           JButtonKare[altinlar.get(i).konum[0]][altinlar.get(i).konum[1]].setBackground(Color.yellow);
+           altinlar.get(i).gizli=false;
+           }
+            int kar = (altinlar.get(i).altinMiktari - (((Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik)) * Integer.parseInt(CHamleMaaliyet1.getText())) + Integer.parseInt(CHedefMaaliyet.getText())));
+            if (kar > enkMaliyet && altinlar.get(i).gizli==false) {
+                enkMaliyet = kar;
+                hedefAltinx = altinlar.get(i).konum[0];
+                hedefAltiny = altinlar.get(i).konum[1];
+                xuzaklik = tempxuzaklik;
+                yuzaklik = tempyuzaklik;
+                silinecekAltinIndex = i;
+            }
+        }
+        System.out.println(enkMaliyet + "enk");
+        System.out.println(xuzaklik + " C için" + yuzaklik);
+
+        int adim = 0;
+        oyuncuC.hedefAltinKonum[0] = hedefAltinx;
+        oyuncuC.hedefAltinKonum[1] = hedefAltiny;
+        System.out.println(oyuncuC.hedefAltinKonum[0] + " x hedeflenen" + oyuncuC.hedefAltinKonum[1] + "y hedeflenen");
+        JButtonKare[oyuncuC.hedefAltinKonum[0]][oyuncuC.hedefAltinKonum[1]].setText("<html>" + kareler[oyuncuC.hedefAltinKonum[0]][oyuncuC.hedefAltinKonum[1]].altinMiktari + "<br>" + "X" + "</html>");
+
+        if (Math.abs(yuzaklik) + Math.abs(xuzaklik) <= 3) {//eğer altın a kullanıcısının adımları içerisinde ise altını alacağı için listeden silmemiz gerekir
+            altinlar.remove(silinecekAltinIndex);
+        }
+
+        hareketEttir(xuzaklik, yuzaklik, adim, oyuncuC, "C", Color.BLUE);
+        //System.out.println(oyuncuC.AktifKonumu[0]+"m "+oyuncuC.AktifKonumu[1]+"u "+oyuncuC.hedefAltinKonum[0]+" b"+oyuncuC.hedefAltinKonum[1]);
+        oyuncuC.harcananAltinMiktari += Integer.parseInt(CHamleMaaliyet1.getText()) * adim + Integer.parseInt(CHedefMaaliyet.getText());
+        oyuncuC.mevcutAltinMiktari = oyuncuC.mevcutAltinMiktari - oyuncuC.harcananAltinMiktari;
+        oyuncuC.kasadakiAltinMiktari += oyuncuC.harcananAltinMiktari;
+        if (oyuncuC.AktifKonumu[0] == oyuncuC.hedefAltinKonum[0] && oyuncuC.AktifKonumu[1] == oyuncuC.hedefAltinKonum[1]) {
+            oyuncuC.mevcutAltinMiktari += kareler[oyuncuC.hedefAltinKonum[0]][oyuncuC.hedefAltinKonum[1]].altinMiktari;
+            oyuncuC.toplananAltinMiktari += kareler[oyuncuC.hedefAltinKonum[0]][oyuncuC.hedefAltinKonum[1]].altinMiktari;
+
+        }
+
+        System.out.println(
+                "harcanan:" + oyuncuC.harcananAltinMiktari + " kasadakiAltın" + oyuncuC.kasadakiAltinMiktari + " Mevcut altın" + oyuncuC.mevcutAltinMiktari + "toplanan altın" + oyuncuC.toplananAltinMiktari);
 
     }
 
-    public void hareketEttir(int xuzaklik, int yuzaklik, int adim, Oyuncu oyuncu,String oyuncuIsmi,Color renk) {
+    public void hareketEttir(int xuzaklik, int yuzaklik, int adim, Oyuncu oyuncu, String oyuncuIsmi, Color renk) {
         if (xuzaklik < 0 && yuzaklik < 0) {
             for (int i = oyuncu.AktifKonumu[0]; i < oyuncu.hedefAltinKonum[0]; i++) {
                 if (adim < 3) {
@@ -863,11 +920,11 @@ public class Arayüz extends javax.swing.JFrame {
         kontrolAlani.add(adimSayisi);
         adimSayisi.setBounds(100, 200, 30, 30);
 
-        DHedefMaaliyet.setText("D Oyuncusu hedef maaliyeti");
+        DHedefMaaliyet.setText("20");
         kontrolAlani.add(DHedefMaaliyet);
         DHedefMaaliyet.setBounds(10, 480, 120, 35);
 
-        DHamleMaaliyet.setText("D Oyuncusu hamle maaliyeti");
+        DHamleMaaliyet.setText("5");
         kontrolAlani.add(DHamleMaaliyet);
         DHamleMaaliyet.setBounds(130, 480, 120, 35);
 
@@ -875,7 +932,7 @@ public class Arayüz extends javax.swing.JFrame {
         kontrolAlani.add(BHedefMaaliyet);
         BHedefMaaliyet.setBounds(10, 400, 120, 35);
 
-        CHedefMaaliyet.setText("C Oyuncusu hedef maaliyeti");
+        CHedefMaaliyet.setText("15");
         kontrolAlani.add(CHedefMaaliyet);
         CHedefMaaliyet.setBounds(10, 440, 120, 35);
 
@@ -891,7 +948,7 @@ public class Arayüz extends javax.swing.JFrame {
         kontrolAlani.add(BHamleMaaliyet1);
         BHamleMaaliyet1.setBounds(130, 400, 120, 35);
 
-        CHamleMaaliyet1.setText("C Oyuncusu hamle maaliyeti");
+        CHamleMaaliyet1.setText("5");
         kontrolAlani.add(CHamleMaaliyet1);
         CHamleMaaliyet1.setBounds(130, 440, 120, 35);
 
@@ -951,7 +1008,14 @@ public class Arayüz extends javax.swing.JFrame {
 
     private void baslaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_baslaActionPerformed
         oyunOlustur();
-        AOyna();
+        BOyna();
+         try {
+            Thread.sleep(5000);
+            
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Arayüz.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         COyna();
     }//GEN-LAST:event_baslaActionPerformed
 
     /**
