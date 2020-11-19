@@ -61,6 +61,7 @@ public class Arayüz extends javax.swing.JFrame {
             for (int i = 0; i < tahtaYSayisi; i++) {
                 for (int j = 0; j < tahtaXSayisi; j++) {
                     JButtonKare[i][j] = new JButton();
+                    JButtonKare[i][j].setBackground(new java.awt.Color(240, 240, 240));
                     kareler[i][j] = new Kare();
                     oyunAlani.add(JButtonKare[i][j], BorderLayout.CENTER);
                 }
@@ -173,7 +174,7 @@ public class Arayüz extends javax.swing.JFrame {
         int enkAdim = Integer.MAX_VALUE;
         int xuzaklik = 0, yuzaklik = 0;
         int silinecekAltinIndex = 0;
-        int hedefMaliyeti=0;
+        int hedefMaliyeti = 0;
         int hedefAltinx = 0, hedefAltiny = 0;
         if (oyuncuA.hedefAltinKonum[0] == -1 && oyuncuA.hedefAltinKonum[1] == -1) {//oyuncu hedefi yoksa
             for (int i = 0; i < altinlar.size(); i++) {
@@ -193,7 +194,7 @@ public class Arayüz extends javax.swing.JFrame {
             }
             oyuncuA.hedefAltinKonum[0] = hedefAltinx;
             oyuncuA.hedefAltinKonum[1] = hedefAltiny;
-            hedefMaliyeti=Integer.parseInt(AHedefMaaliyet1.getText());
+            hedefMaliyeti = Integer.parseInt(AHedefMaaliyet1.getText());
         } else {//oyuncunun hedefi varsa silinecek altının arraylistteki yeri tespit edilir
             for (int i = 0; i < altinlar.size(); i++) {
                 if (altinlar.get(i).konum[0] == oyuncuA.hedefAltinKonum[0] && altinlar.get(i).konum[1] == oyuncuA.hedefAltinKonum[1]) {
@@ -202,7 +203,7 @@ public class Arayüz extends javax.swing.JFrame {
             }
             xuzaklik = oyuncuA.AktifKonumu[0] - oyuncuA.hedefAltinKonum[0];
             yuzaklik = oyuncuA.AktifKonumu[1] - oyuncuA.hedefAltinKonum[1];
-            hedefMaliyeti=0;
+            hedefMaliyeti = 0;
         }
 
         int adim = 0;
@@ -222,8 +223,11 @@ public class Arayüz extends javax.swing.JFrame {
         }
         if (Math.abs(yuzaklik) + Math.abs(xuzaklik) <= 3) {//eğer altın a kullanıcısının adımları içerisinde ise altını alacağı için listeden silmemiz gerekir
             altinlar.remove(silinecekAltinIndex);
+            kareler[oyuncuA.hedefAltinKonum[0]][oyuncuA.hedefAltinKonum[1]].altinMiktari = 0;
+            kareler[oyuncuA.hedefAltinKonum[0]][oyuncuA.hedefAltinKonum[1]].gizli = false;
             oyuncuA.hedefAltinKonum[0] = -1;    //oyuncu hedefini tmamladığı için artık bir hedefi yok
             oyuncuA.hedefAltinKonum[1] = -1;    //oyuncu hedefini tmamladığı için artık bir hedefi yok
+
         }
         System.out.println("harcanan:" + oyuncuA.harcananAltinMiktari + " kasadakiAltın" + oyuncuA.kasadakiAltinMiktari + " Mevcut altın" + oyuncuA.mevcutAltinMiktari + "toplanan altın" + oyuncuA.toplananAltinMiktari);
 
@@ -233,7 +237,7 @@ public class Arayüz extends javax.swing.JFrame {
         int enkMaliyet = Integer.MIN_VALUE;
         int xuzaklik = 0, yuzaklik = 0;
         int silinecekAltinIndex = 0;
-        int hedefMaliyeti=0;
+        int hedefMaliyeti = 0;
         int hedefAltinx = 0, hedefAltiny = 0;
         if (oyuncuB.hedefAltinKonum[0] == -1 && oyuncuB.hedefAltinKonum[1] == -1) {//oyuncu hedefi yoksa
             System.out.println("hedef yok");
@@ -255,7 +259,7 @@ public class Arayüz extends javax.swing.JFrame {
             }
             oyuncuB.hedefAltinKonum[0] = hedefAltinx;
             oyuncuB.hedefAltinKonum[1] = hedefAltiny;
-            hedefMaliyeti=Integer.parseInt(BHedefMaaliyet.getText());
+            hedefMaliyeti = Integer.parseInt(BHedefMaaliyet.getText());
         } else {
             System.out.println("hedef var");
             for (int i = 0; i < altinlar.size(); i++) {
@@ -265,7 +269,7 @@ public class Arayüz extends javax.swing.JFrame {
             }
             xuzaklik = oyuncuB.AktifKonumu[0] - oyuncuB.hedefAltinKonum[0];
             yuzaklik = oyuncuB.AktifKonumu[1] - oyuncuB.hedefAltinKonum[1];
-            hedefMaliyeti=0;
+            hedefMaliyeti = 0;
         }
         System.out.println(xuzaklik + " b için" + yuzaklik);
         int adim = 0;
@@ -286,12 +290,14 @@ public class Arayüz extends javax.swing.JFrame {
         }
         if (Math.abs(yuzaklik) + Math.abs(xuzaklik) <= 3) {//eğer altın a kullanıcısının adımları içerisinde ise altını alacağı için listeden silmemiz gerekir
             altinlar.remove(silinecekAltinIndex);
+            kareler[oyuncuB.hedefAltinKonum[0]][oyuncuB.hedefAltinKonum[1]].altinMiktari = 0;
+            kareler[oyuncuB.hedefAltinKonum[0]][oyuncuB.hedefAltinKonum[1]].gizli = false;
             oyuncuB.hedefAltinKonum[0] = -1;    //oyuncu hedefini tmamladığı için artık bir hedefi yok
             oyuncuB.hedefAltinKonum[1] = -1;    //oyuncu hedefini tmamladığı için artık bir hedefi yok
         }
 
         System.out.println(
-                Integer.parseInt(CHamleMaaliyet1.getText()) * adim + hedefMaliyeti+"harcanan:" + oyuncuB.harcananAltinMiktari + " kasadakiAltın" + oyuncuB.kasadakiAltinMiktari + " Mevcut altın" + oyuncuB.mevcutAltinMiktari + "toplanan altın" + oyuncuB.toplananAltinMiktari);
+                Integer.parseInt(CHamleMaaliyet1.getText()) * adim + hedefMaliyeti + "harcanan:" + oyuncuB.harcananAltinMiktari + " kasadakiAltın" + oyuncuB.kasadakiAltinMiktari + " Mevcut altın" + oyuncuB.mevcutAltinMiktari + "toplanan altın" + oyuncuB.toplananAltinMiktari);
 
     }
 
@@ -300,7 +306,7 @@ public class Arayüz extends javax.swing.JFrame {
         int enkAdim = Integer.MAX_VALUE;
         int xuzaklik = 0, yuzaklik = 0;
         int silinecekAltinIndex = 0;
-        int hedefMaliyet=0;
+        int hedefMaliyet = 0;
         int hedefAltinx = 0, hedefAltiny = 0;
         if (oyuncuC.hedefAltinKonum[0] == -1 && oyuncuC.hedefAltinKonum[1] == -1) {//oyuncu hedefi yoksa
             for (int i = 0; i < altinlar.size(); i++) {
@@ -323,7 +329,7 @@ public class Arayüz extends javax.swing.JFrame {
             }
             oyuncuC.hedefAltinKonum[0] = hedefAltinx;
             oyuncuC.hedefAltinKonum[1] = hedefAltiny;
-            hedefMaliyet=Integer.parseInt(CHedefMaaliyet.getText());
+            hedefMaliyet = Integer.parseInt(CHedefMaaliyet.getText());
         } else {
             for (int i = 0; i < altinlar.size(); i++) {
                 if (altinlar.get(i).konum[0] == oyuncuC.hedefAltinKonum[0] && altinlar.get(i).konum[1] == oyuncuC.hedefAltinKonum[1]) {
@@ -332,7 +338,7 @@ public class Arayüz extends javax.swing.JFrame {
             }
             xuzaklik = oyuncuC.AktifKonumu[0] - oyuncuC.hedefAltinKonum[0];
             yuzaklik = oyuncuC.AktifKonumu[1] - oyuncuC.hedefAltinKonum[1];
-            hedefMaliyet=0;
+            hedefMaliyet = 0;
         }
         System.out.println(enkMaliyet + "enk");
         System.out.println(xuzaklik + " C için" + yuzaklik);
@@ -354,6 +360,8 @@ public class Arayüz extends javax.swing.JFrame {
         }
         if (Math.abs(yuzaklik) + Math.abs(xuzaklik) <= 3) {//eğer altın a kullanıcısının adımları içerisinde ise altını alacağı için listeden silmemiz gerekir
             altinlar.remove(silinecekAltinIndex);
+            kareler[oyuncuC.hedefAltinKonum[0]][oyuncuC.hedefAltinKonum[1]].altinMiktari = 0;
+            kareler[oyuncuC.hedefAltinKonum[0]][oyuncuC.hedefAltinKonum[1]].gizli = false;
             oyuncuC.hedefAltinKonum[0] = -1;    //oyuncu hedefini tmamladığı için artık bir hedefi yok
             oyuncuC.hedefAltinKonum[1] = -1;    //oyuncu hedefini tmamladığı için artık bir hedefi yok
         }
@@ -383,8 +391,18 @@ public class Arayüz extends javax.swing.JFrame {
                             try {
 
                                 Thread.sleep(sleep);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.WHITE);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
+                                if (kareler[tmpKonumx1][tmpKonumy1].altinMiktari ==0) {
+                                    JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(new java.awt.Color(240, 240, 240));
+                                    JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
+                                } else {
+                                    if (kareler[tmpKonumx1][tmpKonumy1].gizli == true) {
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.PINK);
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setText(String.valueOf(kareler[tmpKonumx1][tmpKonumy1].altinMiktari));
+                                    } else {
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.YELLOW);
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setText(String.valueOf(kareler[tmpKonumx1][tmpKonumy1].altinMiktari));
+                                    }
+                                }
                                 tmpKonumx1 = tmpKonumx1 + 1; // A için x in konumunu arttırdık veya azalttık.
                                 //System.out.println(oyuncu.AktifKonumu[0]+"cc");
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
@@ -416,8 +434,18 @@ public class Arayüz extends javax.swing.JFrame {
                             int tmpKonumy2 = tmpKonumy;
                             try {
                                 Thread.sleep(sleep);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.WHITE);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
+                                if (kareler[tmpKonumx2][tmpKonumy2].altinMiktari ==0) {
+                                    JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(new java.awt.Color(240, 240, 240));
+                                    JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
+                                } else {
+                                    if (kareler[tmpKonumx2][tmpKonumy2].gizli == true) {
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.PINK);
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setText(String.valueOf(kareler[tmpKonumx2][tmpKonumy2].altinMiktari));
+                                    } else {
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.YELLOW);
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setText(String.valueOf(kareler[tmpKonumx2][tmpKonumy2].altinMiktari));
+                                    }
+                                }
                                 tmpKonumy2 = tmpKonumy2 + 1; // A için x in konumunu arttırdık veya azalttık.
 
                                 JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(renk);
@@ -452,8 +480,18 @@ public class Arayüz extends javax.swing.JFrame {
                             try {
 
                                 Thread.sleep(sleep);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.WHITE);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
+                                if (kareler[tmpKonumx1][tmpKonumy1].altinMiktari ==0) {
+                                    JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(new java.awt.Color(240, 240, 240));
+                                    JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
+                                } else {
+                                    if (kareler[tmpKonumx1][tmpKonumy1].gizli == true) {
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.PINK);
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setText(String.valueOf(kareler[tmpKonumx1][tmpKonumy1].altinMiktari));
+                                    } else {
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.YELLOW);
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setText(String.valueOf(kareler[tmpKonumx1][tmpKonumy1].altinMiktari));
+                                    }
+                                }
                                 tmpKonumx1 = tmpKonumx1 + 1; // A için x in konumunu arttırdık veya azalttık.
                                 //System.out.println(oyuncu.AktifKonumu[0]+"cc");
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
@@ -489,8 +527,18 @@ public class Arayüz extends javax.swing.JFrame {
                             try {
 
                                 Thread.sleep(sleep);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.WHITE);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
+                                if (kareler[tmpKonumx1][tmpKonumy1].altinMiktari ==0) {
+                                    JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(new java.awt.Color(240, 240, 240));
+                                    JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
+                                } else {
+                                    if (kareler[tmpKonumx1][tmpKonumy1].gizli == true) {
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.PINK);
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setText(String.valueOf(kareler[tmpKonumx1][tmpKonumy1].altinMiktari));
+                                    } else {
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.YELLOW);
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setText(String.valueOf(kareler[tmpKonumx1][tmpKonumy1].altinMiktari));
+                                    }
+                                }
                                 tmpKonumx1 = tmpKonumx1 - 1; // A için x in konumunu arttırdık veya azalttık.
                                 //System.out.println(oyuncu.AktifKonumu[0]+"cc");
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
@@ -522,8 +570,18 @@ public class Arayüz extends javax.swing.JFrame {
                             int tmpKonumy2 = tmpKonumy;
                             try {
                                 Thread.sleep(sleep);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.WHITE);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
+                                if (kareler[tmpKonumx2][tmpKonumy2].altinMiktari ==0) {
+                                    JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(new java.awt.Color(240, 240, 240));
+                                    JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
+                                } else {
+                                    if (kareler[tmpKonumx2][tmpKonumy2].gizli == true) {
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.PINK);
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setText(String.valueOf(kareler[tmpKonumx2][tmpKonumy2].altinMiktari));
+                                    } else {
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.YELLOW);
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setText(String.valueOf(kareler[tmpKonumx2][tmpKonumy2].altinMiktari));
+                                    }
+                                }
                                 tmpKonumy2 = tmpKonumy2 + 1; // A için x in konumunu arttırdık veya azalttık.
 
                                 JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(renk);
@@ -558,8 +616,18 @@ public class Arayüz extends javax.swing.JFrame {
                             try {
 
                                 Thread.sleep(sleep);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.WHITE);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
+                                if (kareler[tmpKonumx1][tmpKonumy1].altinMiktari ==0) {
+                                    JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(new java.awt.Color(240, 240, 240));
+                                    JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
+                                } else {
+                                    if (kareler[tmpKonumx1][tmpKonumy1].gizli == true) {
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.PINK);
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setText(String.valueOf(kareler[tmpKonumx1][tmpKonumy1].altinMiktari));
+                                    } else {
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.YELLOW);
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setText(String.valueOf(kareler[tmpKonumx1][tmpKonumy1].altinMiktari));
+                                    }
+                                }
                                 tmpKonumx1 = tmpKonumx1 - 1; // A için x in konumunu arttırdık veya azalttık.
                                 //System.out.println(oyuncu.AktifKonumu[0]+"cc");
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
@@ -596,8 +664,18 @@ public class Arayüz extends javax.swing.JFrame {
                             try {
 
                                 Thread.sleep(sleep);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.WHITE);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
+                                if (kareler[tmpKonumx1][tmpKonumy1].altinMiktari ==0) {
+                                    JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(new java.awt.Color(240, 240, 240));
+                                    JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
+                                } else {
+                                    if (kareler[tmpKonumx1][tmpKonumy1].gizli == true) {
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.PINK);
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setText(String.valueOf(kareler[tmpKonumx1][tmpKonumy1].altinMiktari));
+                                    } else {
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.YELLOW);
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setText(String.valueOf(kareler[tmpKonumx1][tmpKonumy1].altinMiktari));
+                                    }
+                                }
                                 tmpKonumx1 = tmpKonumx1 + 1; // A için x in konumunu arttırdık veya azalttık.
                                 //System.out.println(oyuncu.AktifKonumu[0]+"cc");
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
@@ -630,8 +708,18 @@ public class Arayüz extends javax.swing.JFrame {
                             int tmpKonumy2 = tmpKonumy;
                             try {
                                 Thread.sleep(sleep);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.WHITE);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
+                                if (kareler[tmpKonumx2][tmpKonumy2].altinMiktari ==0) {
+                                    JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(new java.awt.Color(240, 240, 240));
+                                    JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
+                                } else {
+                                    if (kareler[tmpKonumx2][tmpKonumy2].gizli == true) {
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.PINK);
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setText(String.valueOf(kareler[tmpKonumx2][tmpKonumy2].altinMiktari));
+                                    } else {
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.YELLOW);
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setText(String.valueOf(kareler[tmpKonumx2][tmpKonumy2].altinMiktari));
+                                    }
+                                }
                                 tmpKonumy2 = tmpKonumy2 - 1; // A için x in konumunu arttırdık veya azalttık.
 
                                 JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(renk);
@@ -666,8 +754,18 @@ public class Arayüz extends javax.swing.JFrame {
                             try {
 
                                 Thread.sleep(sleep);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.WHITE);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
+                                if (kareler[tmpKonumx1][tmpKonumy1].altinMiktari ==0) {
+                                    JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(new java.awt.Color(240, 240, 240));
+                                    JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
+                                } else {
+                                    if (kareler[tmpKonumx1][tmpKonumy1].gizli == true) {
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.PINK);
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setText(String.valueOf(kareler[tmpKonumx1][tmpKonumy1].altinMiktari));
+                                    } else {
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.YELLOW);
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setText(String.valueOf(kareler[tmpKonumx1][tmpKonumy1].altinMiktari));
+                                    }
+                                }
                                 tmpKonumx1 = tmpKonumx1 - 1; // A için x in konumunu arttırdık veya azalttık.
                                 //System.out.println(oyuncu.AktifKonumu[0]+"cc");
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
@@ -699,8 +797,18 @@ public class Arayüz extends javax.swing.JFrame {
                             int tmpKonumy2 = tmpKonumy;
                             try {
                                 Thread.sleep(sleep);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.WHITE);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
+                                if (kareler[tmpKonumx2][tmpKonumy2].altinMiktari ==0) {
+                                    JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(new java.awt.Color(240, 240, 240));
+                                    JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
+                                } else {
+                                    if (kareler[tmpKonumx2][tmpKonumy2].gizli == true) {
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.PINK);
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setText(String.valueOf(kareler[tmpKonumx2][tmpKonumy2].altinMiktari));
+                                    } else {
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.YELLOW);
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setText(String.valueOf(kareler[tmpKonumx2][tmpKonumy2].altinMiktari));
+                                    }
+                                }
                                 tmpKonumy2 = tmpKonumy2 - 1; // A için x in konumunu arttırdık veya azalttık.
 
                                 JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(renk);
@@ -717,7 +825,6 @@ public class Arayüz extends javax.swing.JFrame {
         }
         if (yuzaklik > 0 && xuzaklik == 0) {
             for (int i = oyuncu.AktifKonumu[1]; i > oyuncu.hedefAltinKonum[1]; i--) {
-                System.out.println("--------------------" + oyuncu.AktifKonumu[1] + " " + oyuncu.hedefAltinKonum[1]);
                 if (adim < 3) {
                     adim++;
                     int sleep = adim * 1500;
@@ -734,8 +841,18 @@ public class Arayüz extends javax.swing.JFrame {
                             int tmpKonumy2 = tmpKonumy;
                             try {
                                 Thread.sleep(sleep);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.WHITE);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
+                                if (kareler[tmpKonumx2][tmpKonumy2].altinMiktari ==0) {
+                                    JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(new java.awt.Color(240, 240, 240));
+                                    JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
+                                } else {
+                                    if (kareler[tmpKonumx2][tmpKonumy2].gizli == true) {
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.PINK);
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setText(String.valueOf(kareler[tmpKonumx2][tmpKonumy2].altinMiktari));
+                                    } else {
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.YELLOW);
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setText(String.valueOf(kareler[tmpKonumx2][tmpKonumy2].altinMiktari));
+                                    }
+                                }
                                 tmpKonumy2 = tmpKonumy2 - 1; // A için x in konumunu arttırdık veya azalttık.
 
                                 JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(renk);
@@ -770,8 +887,18 @@ public class Arayüz extends javax.swing.JFrame {
                             try {
 
                                 Thread.sleep(sleep);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.WHITE);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
+                                if (kareler[tmpKonumx1][tmpKonumy1].altinMiktari ==0) {
+                                    JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(new java.awt.Color(240, 240, 240));
+                                    JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
+                                } else {
+                                    if (kareler[tmpKonumx1][tmpKonumy1].gizli == true) {
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.PINK);
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setText(String.valueOf(kareler[tmpKonumx1][tmpKonumy1].altinMiktari));
+                                    } else {
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.YELLOW);
+                                        JButtonKare[tmpKonumx1][tmpKonumy1].setText(String.valueOf(kareler[tmpKonumx1][tmpKonumy1].altinMiktari));
+                                    }
+                                }
                                 tmpKonumx1 = tmpKonumx1 + 1; // A için x in konumunu arttırdık veya azalttık.
                                 //System.out.println(oyuncu.AktifKonumu[0]+"cc");
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
@@ -803,8 +930,18 @@ public class Arayüz extends javax.swing.JFrame {
                             int tmpKonumy2 = tmpKonumy;
                             try {
                                 Thread.sleep(sleep);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.WHITE);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
+                                 if (kareler[tmpKonumx2][tmpKonumy2].altinMiktari ==0) {
+                                    JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(new java.awt.Color(240, 240, 240));
+                                    JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
+                                } else {
+                                    if (kareler[tmpKonumx2][tmpKonumy2].gizli == true) {
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.PINK);
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setText(String.valueOf(kareler[tmpKonumx2][tmpKonumy2].altinMiktari));
+                                    } else {
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.YELLOW);
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setText(String.valueOf(kareler[tmpKonumx2][tmpKonumy2].altinMiktari));
+                                    }
+                                }
                                 tmpKonumy2 = tmpKonumy2 + 1; // A için x in konumunu arttırdık veya azalttık.
 
                                 JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(renk);
@@ -839,8 +976,18 @@ public class Arayüz extends javax.swing.JFrame {
                             int tmpKonumy2 = tmpKonumy;
                             try {
                                 Thread.sleep(sleep);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.WHITE);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
+                                 if (kareler[tmpKonumx2][tmpKonumy2].altinMiktari ==0) {
+                                    JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(new java.awt.Color(240, 240, 240));
+                                    JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
+                                } else {
+                                    if (kareler[tmpKonumx2][tmpKonumy2].gizli == true) {
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.PINK);
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setText(String.valueOf(kareler[tmpKonumx2][tmpKonumy2].altinMiktari));
+                                    } else {
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.YELLOW);
+                                        JButtonKare[tmpKonumx2][tmpKonumy2].setText(String.valueOf(kareler[tmpKonumx2][tmpKonumy2].altinMiktari));
+                                    }
+                                }
                                 tmpKonumy2 = tmpKonumy2 + 1; // A için x in konumunu arttırdık veya azalttık.
 
                                 JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(renk);
