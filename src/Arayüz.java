@@ -188,7 +188,7 @@ public class Arayüz extends javax.swing.JFrame {
         if (Math.abs(yuzaklik) + Math.abs(xuzaklik) <= 3) {//eğer altın a kullanıcısının adımları içerisinde ise altını alacağı için listeden silmemiz gerekir
             altinlar.remove(silinecekAltinIndex);
         }
-        hareketEttir(xuzaklik, yuzaklik, adim, oyuncuA);
+        hareketEttir(xuzaklik, yuzaklik, adim, oyuncuA,"A",Color.RED);
         //System.out.println(oyuncuA.AktifKonumu[0]+"m "+oyuncuA.AktifKonumu[1]+"u "+oyuncuA.hedefAltinKonum[0]+" b"+oyuncuA.hedefAltinKonum[1]);
         oyuncuA.harcananAltinMiktari += Integer.parseInt(AHamleMaaliyet.getText()) * adim + Integer.parseInt(AHedefMaaliyet1.getText());
         oyuncuA.mevcutAltinMiktari = oyuncuA.mevcutAltinMiktari - oyuncuA.harcananAltinMiktari;
@@ -234,7 +234,7 @@ public class Arayüz extends javax.swing.JFrame {
         if (Math.abs(yuzaklik) + Math.abs(xuzaklik) <= 3) {//eğer altın a kullanıcısının adımları içerisinde ise altını alacağı için listeden silmemiz gerekir
             altinlar.remove(silinecekAltinIndex);
         }
-        hareketEttir(xuzaklik, yuzaklik, adim, oyuncuB);
+        hareketEttir(xuzaklik, yuzaklik, adim, oyuncuB,"B",Color.ORANGE);
 
         //System.out.println(oyuncuB.AktifKonumu[0]+"m "+oyuncuB.AktifKonumu[1]+"u "+oyuncuB.hedefAltinKonum[0]+" b"+oyuncuB.hedefAltinKonum[1]);
         oyuncuB.harcananAltinMiktari += Integer.parseInt(AHamleMaaliyet.getText()) * adim + Integer.parseInt(AHedefMaaliyet1.getText());
@@ -251,7 +251,7 @@ public class Arayüz extends javax.swing.JFrame {
 
     }
 
-    public void hareketEttir(int xuzaklik, int yuzaklik, int adim, Oyuncu oyuncu) {
+    public void hareketEttir(int xuzaklik, int yuzaklik, int adim, Oyuncu oyuncu,String oyuncuIsmi,Color renk) {
         if (xuzaklik < 0 && yuzaklik < 0) {
             for (int i = oyuncu.AktifKonumu[0]; i < oyuncu.hedefAltinKonum[0]; i++) {
                 if (adim < 3) {
@@ -275,10 +275,10 @@ public class Arayüz extends javax.swing.JFrame {
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
                                 tmpKonumx1 = tmpKonumx1 + 1; // A için x in konumunu arttırdık veya azalttık.
                                 //System.out.println(oyuncu.AktifKonumu[0]+"cc");
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText(oyuncuIsmi);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText(oyuncuIsmi);
                             } catch (InterruptedException e) {
                             }
 
@@ -308,10 +308,10 @@ public class Arayüz extends javax.swing.JFrame {
                                 JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
                                 tmpKonumy2 = tmpKonumy2 + 1; // A için x in konumunu arttırdık veya azalttık.
 
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(renk);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText(oyuncuIsmi);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(renk);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText(oyuncuIsmi);
                             } catch (InterruptedException e) {
                             }
 
@@ -344,10 +344,10 @@ public class Arayüz extends javax.swing.JFrame {
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
                                 tmpKonumx1 = tmpKonumx1 + 1; // A için x in konumunu arttırdık veya azalttık.
                                 //System.out.println(oyuncu.AktifKonumu[0]+"cc");
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText(oyuncuIsmi);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText(oyuncuIsmi);
                             } catch (InterruptedException e) {
                             }
 
@@ -381,10 +381,10 @@ public class Arayüz extends javax.swing.JFrame {
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
                                 tmpKonumx1 = tmpKonumx1 - 1; // A için x in konumunu arttırdık veya azalttık.
                                 //System.out.println(oyuncu.AktifKonumu[0]+"cc");
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText(oyuncuIsmi);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText(oyuncuIsmi);
                             } catch (InterruptedException e) {
                             }
 
@@ -414,10 +414,10 @@ public class Arayüz extends javax.swing.JFrame {
                                 JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
                                 tmpKonumy2 = tmpKonumy2 + 1; // A için x in konumunu arttırdık veya azalttık.
 
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(renk);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText(oyuncuIsmi);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(renk);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText(oyuncuIsmi);
                             } catch (InterruptedException e) {
                             }
 
@@ -450,10 +450,10 @@ public class Arayüz extends javax.swing.JFrame {
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
                                 tmpKonumx1 = tmpKonumx1 - 1; // A için x in konumunu arttırdık veya azalttık.
                                 //System.out.println(oyuncu.AktifKonumu[0]+"cc");
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText(oyuncuIsmi);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText(oyuncuIsmi);
                             } catch (InterruptedException e) {
                             }
 
@@ -488,10 +488,10 @@ public class Arayüz extends javax.swing.JFrame {
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
                                 tmpKonumx1 = tmpKonumx1 + 1; // A için x in konumunu arttırdık veya azalttık.
                                 //System.out.println(oyuncu.AktifKonumu[0]+"cc");
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText(oyuncuIsmi);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText(oyuncuIsmi);
                             } catch (InterruptedException e) {
                             }
 
@@ -522,10 +522,10 @@ public class Arayüz extends javax.swing.JFrame {
                                 JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
                                 tmpKonumy2 = tmpKonumy2 - 1; // A için x in konumunu arttırdık veya azalttık.
 
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(renk);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText(oyuncuIsmi);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(renk);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText(oyuncuIsmi);
                             } catch (InterruptedException e) {
                             }
 
@@ -558,10 +558,10 @@ public class Arayüz extends javax.swing.JFrame {
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
                                 tmpKonumx1 = tmpKonumx1 - 1; // A için x in konumunu arttırdık veya azalttık.
                                 //System.out.println(oyuncu.AktifKonumu[0]+"cc");
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText(oyuncuIsmi);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText(oyuncuIsmi);
                             } catch (InterruptedException e) {
                             }
 
@@ -591,10 +591,10 @@ public class Arayüz extends javax.swing.JFrame {
                                 JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
                                 tmpKonumy2 = tmpKonumy2 - 1; // A için x in konumunu arttırdık veya azalttık.
 
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(renk);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText(oyuncuIsmi);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(renk);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText(oyuncuIsmi);
                             } catch (InterruptedException e) {
                             }
 
@@ -625,10 +625,10 @@ public class Arayüz extends javax.swing.JFrame {
                                 JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
                                 tmpKonumy2 = tmpKonumy2 - 1; // A için x in konumunu arttırdık veya azalttık.
 
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(renk);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText(oyuncuIsmi);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(renk);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText(oyuncuIsmi);
                             } catch (InterruptedException e) {
                             }
 
@@ -661,10 +661,10 @@ public class Arayüz extends javax.swing.JFrame {
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
                                 tmpKonumx1 = tmpKonumx1 + 1; // A için x in konumunu arttırdık veya azalttık.
                                 //System.out.println(oyuncu.AktifKonumu[0]+"cc");
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText(oyuncuIsmi);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText(oyuncuIsmi);
                             } catch (InterruptedException e) {
                             }
 
@@ -694,10 +694,10 @@ public class Arayüz extends javax.swing.JFrame {
                                 JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
                                 tmpKonumy2 = tmpKonumy2 + 1; // A için x in konumunu arttırdık veya azalttık.
 
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(renk);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText(oyuncuIsmi);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(renk);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText(oyuncuIsmi);
                             } catch (InterruptedException e) {
                             }
 
@@ -730,10 +730,10 @@ public class Arayüz extends javax.swing.JFrame {
                                 JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
                                 tmpKonumy2 = tmpKonumy2 + 1; // A için x in konumunu arttırdık veya azalttık.
 
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
-                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(renk);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText(oyuncuIsmi);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(renk);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText(oyuncuIsmi);
                             } catch (InterruptedException e) {
                             }
 
