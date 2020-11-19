@@ -119,44 +119,43 @@ public class Arayüz extends javax.swing.JFrame {
         oyuncuA.mevcutAltinMiktari = Integer.parseInt(mevcutAltin.getText());
         oyuncuA.AktifKonumu[0] = 0;
         oyuncuA.AktifKonumu[1] = 0;
-        oyuncuA.adimSayisi=0;
-        oyuncuA.harcananAltinMiktari=0;
-        oyuncuA.kasadakiAltinMiktari=0;
-        oyuncuA.toplananAltinMiktari=0;
-        
+        oyuncuA.adimSayisi = 0;
+        oyuncuA.harcananAltinMiktari = 0;
+        oyuncuA.kasadakiAltinMiktari = 0;
+        oyuncuA.toplananAltinMiktari = 0;
 
-        JButtonKare[0][tahtaXSayisi - 1].setBackground(Color.ORANGE);
-        JButtonKare[0][tahtaXSayisi - 1].setText("B");
+        JButtonKare[0][tahtaXSayisi-1].setBackground(Color.ORANGE);
+        JButtonKare[0][tahtaXSayisi-1].setText("B");
         oyuncuB.ad = "B";
         oyuncuB.mevcutAltinMiktari = Integer.parseInt(mevcutAltin.getText());
         oyuncuB.AktifKonumu[0] = 0;
-        oyuncuB.AktifKonumu[1] = tahtaXSayisi - 1;
-        oyuncuB.adimSayisi=0;
-        oyuncuB.harcananAltinMiktari=0;
-        oyuncuB.kasadakiAltinMiktari=0;
-        oyuncuB.toplananAltinMiktari=0;
+        oyuncuB.AktifKonumu[1] = tahtaXSayisi-1;
+        oyuncuB.adimSayisi = 0;
+        oyuncuB.harcananAltinMiktari = 0;
+        oyuncuB.kasadakiAltinMiktari = 0;
+        oyuncuB.toplananAltinMiktari = 0;
 
         JButtonKare[tahtaYSayisi - 1][tahtaXSayisi - 1].setBackground(Color.blue);
         JButtonKare[tahtaYSayisi - 1][tahtaXSayisi - 1].setText("C");
         oyuncuC.ad = "C";
         oyuncuC.mevcutAltinMiktari = Integer.parseInt(mevcutAltin.getText());
-        oyuncuC.AktifKonumu[0] =tahtaYSayisi - 1;
+        oyuncuC.AktifKonumu[0] = tahtaYSayisi - 1;
         oyuncuC.AktifKonumu[1] = tahtaXSayisi - 1;
-        oyuncuC.adimSayisi=0;
-        oyuncuC.harcananAltinMiktari=0;
-        oyuncuC.kasadakiAltinMiktari=0;
-        oyuncuC.toplananAltinMiktari=0;
+        oyuncuC.adimSayisi = 0;
+        oyuncuC.harcananAltinMiktari = 0;
+        oyuncuC.kasadakiAltinMiktari = 0;
+        oyuncuC.toplananAltinMiktari = 0;
 
         JButtonKare[tahtaYSayisi - 1][0].setBackground(Color.GREEN);
         JButtonKare[tahtaYSayisi - 1][0].setText("D");
         oyuncuD.ad = "D";
         oyuncuD.mevcutAltinMiktari = Integer.parseInt(mevcutAltin.getText());
-        oyuncuD.AktifKonumu[0] =tahtaYSayisi - 1;
+        oyuncuD.AktifKonumu[0] = tahtaYSayisi - 1;
         oyuncuD.AktifKonumu[1] = 0;
-        oyuncuD.adimSayisi=0;
-        oyuncuD.harcananAltinMiktari=0;
-        oyuncuD.kasadakiAltinMiktari=0;
-        oyuncuD.toplananAltinMiktari=0;
+        oyuncuD.adimSayisi = 0;
+        oyuncuD.harcananAltinMiktari = 0;
+        oyuncuD.kasadakiAltinMiktari = 0;
+        oyuncuD.toplananAltinMiktari = 0;
 
     }
 
@@ -173,6 +172,7 @@ public class Arayüz extends javax.swing.JFrame {
                 enkAdim = Math.abs(tempxuzaklik + tempyuzaklik);
                 xuzaklik = tempxuzaklik;
                 yuzaklik = tempyuzaklik;
+                System.out.println(tempxuzaklik + " bbb " + tempyuzaklik);
                 silinecekAltinIndex = i;
             }
         }
@@ -229,7 +229,7 @@ public class Arayüz extends javax.swing.JFrame {
                 int tmpKonumx = oyuncuA.AktifKonumu[0];
                 int tmpKonumy = oyuncuA.AktifKonumu[1];
                 oyuncuA.AktifKonumu[1] = oyuncuA.AktifKonumu[1] - eksilecek;
-                
+
                 System.out.println("x=" + oyuncuA.AktifKonumu[0] + " y=" + oyuncuA.AktifKonumu[1]);
                 new Thread() {
                     @Override
@@ -257,118 +257,549 @@ public class Arayüz extends javax.swing.JFrame {
         oyuncuA.harcananAltinMiktari += Integer.parseInt(AHamleMaaliyet.getText()) * adim + Integer.parseInt(AHedefMaaliyet1.getText());
         oyuncuA.mevcutAltinMiktari = oyuncuA.mevcutAltinMiktari - oyuncuA.harcananAltinMiktari;
         oyuncuA.kasadakiAltinMiktari += oyuncuA.harcananAltinMiktari;
-        if (oyuncuA.AktifKonumu[0] == oyuncuA.hedefAltinKonum[0] && oyuncuA.AktifKonumu[1] == oyuncuA.hedefAltinKonum[1]) {           
+        if (oyuncuA.AktifKonumu[0] == oyuncuA.hedefAltinKonum[0] && oyuncuA.AktifKonumu[1] == oyuncuA.hedefAltinKonum[1]) {
             oyuncuA.mevcutAltinMiktari += kareler[oyuncuA.hedefAltinKonum[0]][oyuncuA.hedefAltinKonum[1]].altinMiktari;
             oyuncuA.toplananAltinMiktari += kareler[oyuncuA.hedefAltinKonum[0]][oyuncuA.hedefAltinKonum[1]].altinMiktari;
-            
+
         }
-         System.out.println("harcanan:"+oyuncuA.harcananAltinMiktari + " kasadakiAltın" + oyuncuA.kasadakiAltinMiktari + " Mevcut altın" + oyuncuA.mevcutAltinMiktari + "toplanan altın" + oyuncuA.toplananAltinMiktari);
+        System.out.println("harcanan:" + oyuncuA.harcananAltinMiktari + " kasadakiAltın" + oyuncuA.kasadakiAltinMiktari + " Mevcut altın" + oyuncuA.mevcutAltinMiktari + "toplanan altın" + oyuncuA.toplananAltinMiktari);
 
     }
-    
+
     public void BOyna() {
-        int enkMaliyet = Integer.MAX_VALUE;
+        int enkMaliyet = Integer.MIN_VALUE;
         int xuzaklik = 0, yuzaklik = 0;
         int silinecekAltinIndex = 0;
+        int hedefAltinx = 0, hedefAltiny = 0;
         for (int i = 0; i < altinlar.size(); i++) {
             int tempxuzaklik, tempyuzaklik;
             tempxuzaklik = oyuncuB.AktifKonumu[0] - altinlar.get(i).konum[0];
             tempyuzaklik = oyuncuB.AktifKonumu[1] - altinlar.get(i).konum[1];
 
-            if (altinlar.get(i).altinMiktari-((Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik))*Integer.parseInt(BHamleMaaliyet1.getText()))-Integer.parseInt(BHedefMaaliyet.getText())< enkMaliyet && altinlar.get(i).gizli == false) {
-                enkMaliyet = altinlar.get(i).altinMiktari-((Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik))*Integer.parseInt(BHamleMaaliyet1.getText()))-Integer.parseInt(BHedefMaaliyet.getText());
-                xuzaklik = tempxuzaklik;
-                yuzaklik = tempyuzaklik;
-                silinecekAltinIndex = i;
+            int kar = (altinlar.get(i).altinMiktari - (((Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik)) * Integer.parseInt(BHamleMaaliyet1.getText())) + Integer.parseInt(BHedefMaaliyet.getText())));
+          if (kar > enkMaliyet && altinlar.get(i).gizli == false) {
+                enkMaliyet = kar;
+                hedefAltinx = altinlar.get(i).konum[0];
+                hedefAltiny = altinlar.get(i).konum[1];
+                xuzaklik=tempxuzaklik;
+                yuzaklik=tempyuzaklik;
             }
         }
+        System.out.println(enkMaliyet + "enk");
+        System.out.println(xuzaklik + " b için" + yuzaklik);
+
         int adim = 0;
-        oyuncuB.hedefAltinKonum[0] = Math.abs(xuzaklik);
-        oyuncuB.hedefAltinKonum[1] = Math.abs(yuzaklik);
+        oyuncuB.hedefAltinKonum[0] = hedefAltinx;
+        oyuncuB.hedefAltinKonum[1] = hedefAltiny;
+        System.out.println(oyuncuB.hedefAltinKonum[0] + " x hedeflenen" + oyuncuB.hedefAltinKonum[1] + "y hedeflenen");
         JButtonKare[oyuncuB.hedefAltinKonum[0]][oyuncuB.hedefAltinKonum[1]].setText("<html>" + kareler[oyuncuB.hedefAltinKonum[0]][oyuncuB.hedefAltinKonum[1]].altinMiktari + "<br>" + "X" + "</html>");
 
         if (Math.abs(yuzaklik) + Math.abs(xuzaklik) <= 3) {//eğer altın a kullanıcısının adımları içerisinde ise altını alacağı için listeden silmemiz gerekir
             altinlar.remove(silinecekAltinIndex);
         }
-        for (int i = 0; i < Math.abs(xuzaklik); i++) {
-            if (adim < 3) {
+        if (xuzaklik < 0 && yuzaklik < 0) {
+            for (int i = oyuncuB.AktifKonumu[0]; i < oyuncuB.hedefAltinKonum[0]; i++) {
+                if (adim < 3) {
 
-                adim++;
-                int eksilecek = Integer.signum(xuzaklik);
-                int sleep = adim * 1500;
+                    adim++;
+                    int sleep = adim * 1500;
 
-                int tmpKonumx = oyuncuB.AktifKonumu[0];
-                int tmpKonumy = oyuncuB.AktifKonumu[1];
-                oyuncuB.AktifKonumu[0] = oyuncuB.AktifKonumu[0] - eksilecek; // A için x in konumunu arttırdık veya azalttık.
-                System.out.println("x=" + oyuncuB.AktifKonumu[0] + " y=" + oyuncuB.AktifKonumu[1]);
-                new Thread() {
-                    @Override
-                    public void run() {
-                        int tmpKonumx1 = tmpKonumx;
-                        int tmpKonumy1 = tmpKonumy;
-                        try {
+                    int tmpKonumx = oyuncuB.AktifKonumu[0];
+                    int tmpKonumy = oyuncuB.AktifKonumu[1];
+                    oyuncuB.AktifKonumu[0] = oyuncuB.AktifKonumu[0] + 1; // A için x in konumunu arttırdık veya azalttık.
+                    System.out.println("x=" + oyuncuB.AktifKonumu[0] + " y=" + oyuncuB.AktifKonumu[1]);
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            int tmpKonumx1 = tmpKonumx;
+                            int tmpKonumy1 = tmpKonumy;
+                            try {
 
-                            Thread.sleep(sleep);
-                            JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.WHITE);
-                            JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
-                            tmpKonumx1 = tmpKonumx1 - eksilecek; // A için x in konumunu arttırdık veya azalttık.
-                            //System.out.println(oyuncuB.AktifKonumu[0]+"cc");
-                            JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
-                            JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
-                            JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
-                            JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
-                        } catch (InterruptedException e) {
+                                Thread.sleep(sleep);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.WHITE);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
+                                tmpKonumx1 = tmpKonumx1 + 1; // A için x in konumunu arttırdık veya azalttık.
+                                //System.out.println(oyuncuB.AktifKonumu[0]+"cc");
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
+                            } catch (InterruptedException e) {
+                            }
+
                         }
+                    }.start();
+                }
 
-                    }
-                }.start();
+            }
+            for (int i = oyuncuB.AktifKonumu[1]; i < oyuncuB.hedefAltinKonum[1]; i++) {
+                if (adim < 3) {
+                    adim++;
+                    int sleep = adim * 1500;
+
+                    int tmpKonumx = oyuncuB.AktifKonumu[0];
+                    int tmpKonumy = oyuncuB.AktifKonumu[1];
+                    oyuncuB.AktifKonumu[1] = oyuncuB.AktifKonumu[1] + 1;
+
+                    System.out.println("x=" + oyuncuB.AktifKonumu[0] + " y=" + oyuncuB.AktifKonumu[1]);
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            int tmpKonumx2 = tmpKonumx;
+                            int tmpKonumy2 = tmpKonumy;
+                            try {
+                                Thread.sleep(sleep);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.WHITE);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
+                                tmpKonumy2 = tmpKonumy2 + 1; // A için x in konumunu arttırdık veya azalttık.
+
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
+                            } catch (InterruptedException e) {
+                            }
+
+                        }
+                    }.start();
+                }
+            }
+        }
+        
+        if (xuzaklik < 0 && yuzaklik == 0) {
+            for (int i = oyuncuB.AktifKonumu[0]; i < oyuncuB.hedefAltinKonum[0]; i++) {
+                if (adim < 3) {
+
+                    adim++;
+                    int sleep = adim * 1500;
+
+                    int tmpKonumx = oyuncuB.AktifKonumu[0];
+                    int tmpKonumy = oyuncuB.AktifKonumu[1];
+                    oyuncuB.AktifKonumu[0] = oyuncuB.AktifKonumu[0] + 1; // A için x in konumunu arttırdık veya azalttık.
+                    System.out.println("x=" + oyuncuB.AktifKonumu[0] + " y=" + oyuncuB.AktifKonumu[1]);
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            int tmpKonumx1 = tmpKonumx;
+                            int tmpKonumy1 = tmpKonumy;
+                            try {
+
+                                Thread.sleep(sleep);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.WHITE);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
+                                tmpKonumx1 = tmpKonumx1 + 1; // A için x in konumunu arttırdık veya azalttık.
+                                //System.out.println(oyuncuB.AktifKonumu[0]+"cc");
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
+                            } catch (InterruptedException e) {
+                            }
+
+                        }
+                    }.start();
+                }
+
             }
 
         }
-        System.out.println("last x=" + oyuncuB.AktifKonumu[0] + " y=" + oyuncuB.AktifKonumu[1]);
-        for (int i = 0; i < Math.abs(yuzaklik); i++) {
-            if (adim < 3) {
-                adim++;
-                int sleep = adim * 1500;
-                int eksilecek = Integer.signum(yuzaklik);
+        if (xuzaklik > 0 && yuzaklik < 0) {
+            for (int i = oyuncuB.AktifKonumu[0]; i > oyuncuB.hedefAltinKonum[0]; i--) {
+                if (adim < 3) {
 
-                int tmpKonumx = oyuncuB.AktifKonumu[0];
-                int tmpKonumy = oyuncuB.AktifKonumu[1];
-                oyuncuB.AktifKonumu[1] = oyuncuB.AktifKonumu[1] - eksilecek;
-                
-                System.out.println("x=" + oyuncuB.AktifKonumu[0] + " y=" + oyuncuB.AktifKonumu[1]);
-                new Thread() {
-                    @Override
-                    public void run() {
-                        int tmpKonumx2 = tmpKonumx;
-                        int tmpKonumy2 = tmpKonumy;
-                        try {
-                            Thread.sleep(sleep);
-                            JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.WHITE);
-                            JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
-                            tmpKonumy2 = tmpKonumy2 - eksilecek; // A için x in konumunu arttırdık veya azalttık.
+                    adim++;
+                    int sleep = adim * 1500;
 
-                            JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
-                            JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
-                            JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
-                            JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
-                        } catch (InterruptedException e) {
+                    int tmpKonumx = oyuncuB.AktifKonumu[0];
+                    int tmpKonumy = oyuncuB.AktifKonumu[1];
+                    oyuncuB.AktifKonumu[0] = oyuncuB.AktifKonumu[0] - 1; // A için x in konumunu arttırdık veya azalttık.
+                    System.out.println("x=" + oyuncuB.AktifKonumu[0] + " y=" + oyuncuB.AktifKonumu[1]);
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            int tmpKonumx1 = tmpKonumx;
+                            int tmpKonumy1 = tmpKonumy;
+                            try {
+
+                                Thread.sleep(sleep);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.WHITE);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
+                                tmpKonumx1 = tmpKonumx1 - 1; // A için x in konumunu arttırdık veya azalttık.
+                                //System.out.println(oyuncuB.AktifKonumu[0]+"cc");
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
+                            } catch (InterruptedException e) {
+                            }
+
                         }
+                    }.start();
+                }
 
-                    }
-                }.start();
+            }
+            for (int i = oyuncuB.AktifKonumu[1]; i < oyuncuB.hedefAltinKonum[1]; i++) {
+                if (adim < 3) {
+                    adim++;
+                    int sleep = adim * 1500;
+
+                    int tmpKonumx = oyuncuB.AktifKonumu[0];
+                    int tmpKonumy = oyuncuB.AktifKonumu[1];
+                    oyuncuB.AktifKonumu[1] = oyuncuB.AktifKonumu[1] + 1;
+
+                    System.out.println("x=" + oyuncuB.AktifKonumu[0] + " y=" + oyuncuB.AktifKonumu[1]);
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            int tmpKonumx2 = tmpKonumx;
+                            int tmpKonumy2 = tmpKonumy;
+                            try {
+                                Thread.sleep(sleep);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.WHITE);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
+                                tmpKonumy2 = tmpKonumy2 + 1; // A için x in konumunu arttırdık veya azalttık.
+
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
+                            } catch (InterruptedException e) {
+                            }
+
+                        }
+                    }.start();
+                }
             }
         }
+        
+        if (xuzaklik > 0 && yuzaklik == 0) {
+            for (int i = oyuncuB.AktifKonumu[0]; i > oyuncuB.hedefAltinKonum[0]; i--) {
+                if (adim < 3) {
+
+                    adim++;
+                    int sleep = adim * 1500;
+
+                    int tmpKonumx = oyuncuB.AktifKonumu[0];
+                    int tmpKonumy = oyuncuB.AktifKonumu[1];
+                    oyuncuB.AktifKonumu[0] = oyuncuB.AktifKonumu[0] - 1; // A için x in konumunu arttırdık veya azalttık.
+                    System.out.println("x=" + oyuncuB.AktifKonumu[0] + " y=" + oyuncuB.AktifKonumu[1]);
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            int tmpKonumx1 = tmpKonumx;
+                            int tmpKonumy1 = tmpKonumy;
+                            try {
+
+                                Thread.sleep(sleep);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.WHITE);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
+                                tmpKonumx1 = tmpKonumx1 - 1; // A için x in konumunu arttırdık veya azalttık.
+                                //System.out.println(oyuncuB.AktifKonumu[0]+"cc");
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
+                            } catch (InterruptedException e) {
+                            }
+
+                        }
+                    }.start();
+                }
+
+            }
+
+        }
+        ///////
+        if (yuzaklik > 0 && xuzaklik < 0) {
+            for (int i = oyuncuB.AktifKonumu[0]; i < oyuncuB.hedefAltinKonum[0]; i++) {
+                if (adim < 3) {
+
+                    adim++;
+                    int sleep = adim * 1500;
+
+                    int tmpKonumx = oyuncuB.AktifKonumu[0];
+                    int tmpKonumy = oyuncuB.AktifKonumu[1];
+                    oyuncuB.AktifKonumu[0] = oyuncuB.AktifKonumu[0] + 1; // A için x in konumunu arttırdık veya azalttık.
+                    System.out.println("x=" + oyuncuB.AktifKonumu[0] + " y=" + oyuncuB.AktifKonumu[1]);
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            int tmpKonumx1 = tmpKonumx;
+                            int tmpKonumy1 = tmpKonumy;
+                            try {
+
+                                Thread.sleep(sleep);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.WHITE);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
+                                tmpKonumx1 = tmpKonumx1 + 1; // A için x in konumunu arttırdık veya azalttık.
+                                //System.out.println(oyuncuB.AktifKonumu[0]+"cc");
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
+                            } catch (InterruptedException e) {
+                            }
+
+                        }
+                    }.start();
+                    continue;
+                }
+
+            }
+            for (int i = oyuncuB.AktifKonumu[1]; i > oyuncuB.hedefAltinKonum[1]; i--) {
+                if (adim < 3) {
+                    adim++;
+                    int sleep = adim * 1500;
+
+                    int tmpKonumx = oyuncuB.AktifKonumu[0];
+                    int tmpKonumy = oyuncuB.AktifKonumu[1];
+                    oyuncuB.AktifKonumu[1] = oyuncuB.AktifKonumu[1] - 1;
+
+                    System.out.println("x=" + oyuncuB.AktifKonumu[0] + " y=" + oyuncuB.AktifKonumu[1]);
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            int tmpKonumx2 = tmpKonumx;
+                            int tmpKonumy2 = tmpKonumy;
+                            try {
+                                Thread.sleep(sleep);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.WHITE);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
+                                tmpKonumy2 = tmpKonumy2 - 1; // A için x in konumunu arttırdık veya azalttık.
+
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
+                            } catch (InterruptedException e) {
+                            }
+
+                        }
+                    }.start();
+                    continue;
+                }
+            }
+        }
+        if (yuzaklik > 0 && xuzaklik > 0) {
+            for (int i = oyuncuB.AktifKonumu[0]; i > oyuncuB.hedefAltinKonum[0]; i--) {
+                if (adim < 3) {
+
+                    adim++;
+                    int sleep = adim * 1500;
+
+                    int tmpKonumx = oyuncuB.AktifKonumu[0];
+                    int tmpKonumy = oyuncuB.AktifKonumu[1];
+                    oyuncuB.AktifKonumu[0] = oyuncuB.AktifKonumu[0] - 1; // A için x in konumunu arttırdık veya azalttık.
+                    System.out.println("x=" + oyuncuB.AktifKonumu[0] + " y=" + oyuncuB.AktifKonumu[1]);
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            int tmpKonumx1 = tmpKonumx;
+                            int tmpKonumy1 = tmpKonumy;
+                            try {
+
+                                Thread.sleep(sleep);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.WHITE);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
+                                tmpKonumx1 = tmpKonumx1 - 1; // A için x in konumunu arttırdık veya azalttık.
+                                //System.out.println(oyuncuB.AktifKonumu[0]+"cc");
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
+                            } catch (InterruptedException e) {
+                            }
+
+                        }
+                    }.start();
+                }
+
+            }
+            for (int i = oyuncuB.AktifKonumu[1]; i > oyuncuB.hedefAltinKonum[1]; i--) {
+                if (adim < 3) {
+                    adim++;
+                    int sleep = adim * 1500;
+
+                    int tmpKonumx = oyuncuB.AktifKonumu[0];
+                    int tmpKonumy = oyuncuB.AktifKonumu[1];
+                    oyuncuB.AktifKonumu[1] = oyuncuB.AktifKonumu[1] - 1;
+
+                    System.out.println("x=" + oyuncuB.AktifKonumu[0] + " y=" + oyuncuB.AktifKonumu[1]);
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            int tmpKonumx2 = tmpKonumx;
+                            int tmpKonumy2 = tmpKonumy;
+                            try {
+                                Thread.sleep(sleep);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.WHITE);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
+                                tmpKonumy2 = tmpKonumy2 - 1; // A için x in konumunu arttırdık veya azalttık.
+
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
+                            } catch (InterruptedException e) {
+                            }
+
+                        }
+                    }.start();
+                }
+            }
+        }
+        if (yuzaklik > 0 && xuzaklik == 0) {
+            for (int i = oyuncuB.AktifKonumu[1]; i > oyuncuB.hedefAltinKonum[1]; i--) {
+                if (adim < 3) {
+                    adim++;
+                    int sleep = adim * 1500;
+
+                    int tmpKonumx = oyuncuB.AktifKonumu[0];
+                    int tmpKonumy = oyuncuB.AktifKonumu[1];
+                    oyuncuB.AktifKonumu[1] = oyuncuB.AktifKonumu[1] - 1;
+
+                    System.out.println("x=" + oyuncuB.AktifKonumu[0] + " y=" + oyuncuB.AktifKonumu[1]);
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            int tmpKonumx2 = tmpKonumx;
+                            int tmpKonumy2 = tmpKonumy;
+                            try {
+                                Thread.sleep(sleep);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.WHITE);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
+                                tmpKonumy2 = tmpKonumy2 - 1; // A için x in konumunu arttırdık veya azalttık.
+
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
+                            } catch (InterruptedException e) {
+                            }
+
+                        }
+                    }.start();
+                }
+            }
+
+        }
+        if (yuzaklik < 0 && xuzaklik < 0) {
+            for (int i = oyuncuB.AktifKonumu[0]; i < oyuncuB.hedefAltinKonum[0]; i++) {
+                if (adim < 3) {
+
+                    adim++;
+                    int sleep = adim * 1500;
+
+                    int tmpKonumx = oyuncuB.AktifKonumu[0];
+                    int tmpKonumy = oyuncuB.AktifKonumu[1];
+                    oyuncuB.AktifKonumu[0] = oyuncuB.AktifKonumu[0] + 1; // A için x in konumunu arttırdık veya azalttık.
+                    System.out.println("x=" + oyuncuB.AktifKonumu[0] + " y=" + oyuncuB.AktifKonumu[1]);
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            int tmpKonumx1 = tmpKonumx;
+                            int tmpKonumy1 = tmpKonumy;
+                            try {
+
+                                Thread.sleep(sleep);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.WHITE);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("");
+                                tmpKonumx1 = tmpKonumx1 + 1; // A için x in konumunu arttırdık veya azalttık.
+                                //System.out.println(oyuncuB.AktifKonumu[0]+"cc");
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx1][tmpKonumy1].setText("B");
+                            } catch (InterruptedException e) {
+                            }
+
+                        }
+                    }.start();
+                }
+
+            }
+            for (int i = oyuncuB.AktifKonumu[1]; i < oyuncuB.hedefAltinKonum[1]; i++) {
+                if (adim < 3) {
+                    adim++;
+                    int sleep = adim * 1500;
+
+                    int tmpKonumx = oyuncuB.AktifKonumu[0];
+                    int tmpKonumy = oyuncuB.AktifKonumu[1];
+                    oyuncuB.AktifKonumu[1] = oyuncuB.AktifKonumu[1] + 1;
+
+                    System.out.println("x=" + oyuncuB.AktifKonumu[0] + " y=" + oyuncuB.AktifKonumu[1]);
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            int tmpKonumx2 = tmpKonumx;
+                            int tmpKonumy2 = tmpKonumy;
+                            try {
+                                Thread.sleep(sleep);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.WHITE);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
+                                tmpKonumy2 = tmpKonumy2 + 1; // A için x in konumunu arttırdık veya azalttık.
+
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
+                            } catch (InterruptedException e) {
+                            }
+
+                        }
+                    }.start();
+                }
+            }
+        }
+       
+        if (yuzaklik < 0 && xuzaklik == 0) {
+
+            for (int i = oyuncuB.AktifKonumu[1]; i < oyuncuB.hedefAltinKonum[1]; i++) {
+                if (adim < 3) {
+                    adim++;
+                    int sleep = adim * 1500;
+
+                    int tmpKonumx = oyuncuB.AktifKonumu[0];
+                    int tmpKonumy = oyuncuB.AktifKonumu[1];
+                    oyuncuB.AktifKonumu[1] = oyuncuB.AktifKonumu[1] + 1;
+
+                    System.out.println("x=" + oyuncuB.AktifKonumu[0] + " y=" + oyuncuB.AktifKonumu[1]);
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            int tmpKonumx2 = tmpKonumx;
+                            int tmpKonumy2 = tmpKonumy;
+                            try {
+                                Thread.sleep(sleep);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.WHITE);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("");
+                                tmpKonumy2 = tmpKonumy2 + 1; // A için x in konumunu arttırdık veya azalttık.
+
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(Color.ORANGE);
+                                JButtonKare[tmpKonumx2][tmpKonumy2].setText("B");
+                            } catch (InterruptedException e) {
+                            }
+
+                        }
+                    }.start();
+                }
+            }
+        }
+
         //System.out.println(oyuncuB.AktifKonumu[0]+"m "+oyuncuB.AktifKonumu[1]+"u "+oyuncuB.hedefAltinKonum[0]+" b"+oyuncuB.hedefAltinKonum[1]);
         oyuncuB.harcananAltinMiktari += Integer.parseInt(AHamleMaaliyet.getText()) * adim + Integer.parseInt(AHedefMaaliyet1.getText());
         oyuncuB.mevcutAltinMiktari = oyuncuB.mevcutAltinMiktari - oyuncuB.harcananAltinMiktari;
         oyuncuB.kasadakiAltinMiktari += oyuncuB.harcananAltinMiktari;
-        if (oyuncuB.AktifKonumu[0] == oyuncuB.hedefAltinKonum[0] && oyuncuB.AktifKonumu[1] == oyuncuB.hedefAltinKonum[1]) {           
+        if (oyuncuB.AktifKonumu[0] == oyuncuB.hedefAltinKonum[0] && oyuncuB.AktifKonumu[1] == oyuncuB.hedefAltinKonum[1]) {
             oyuncuB.mevcutAltinMiktari += kareler[oyuncuB.hedefAltinKonum[0]][oyuncuB.hedefAltinKonum[1]].altinMiktari;
             oyuncuB.toplananAltinMiktari += kareler[oyuncuB.hedefAltinKonum[0]][oyuncuB.hedefAltinKonum[1]].altinMiktari;
-            
+
         }
-         System.out.println("harcanan:"+oyuncuB.harcananAltinMiktari + " kasadakiAltın" + oyuncuB.kasadakiAltinMiktari + " Mevcut altın" + oyuncuB.mevcutAltinMiktari + "toplanan altın" + oyuncuB.toplananAltinMiktari);
+
+        System.out.println(
+                "harcanan:" + oyuncuB.harcananAltinMiktari + " kasadakiAltın" + oyuncuB.kasadakiAltinMiktari + " Mevcut altın" + oyuncuB.mevcutAltinMiktari + "toplanan altın" + oyuncuB.toplananAltinMiktari);
 
     }
 
@@ -557,11 +988,6 @@ public class Arayüz extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void baslaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_baslaActionPerformed
-        oyunOlustur();
-        BOyna();
-    }//GEN-LAST:event_baslaActionPerformed
-
     private void tahtaYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tahtaYActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_tahtaYActionPerformed
@@ -582,6 +1008,11 @@ public class Arayüz extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_adimSayisiActionPerformed
 
+    private void baslaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_baslaActionPerformed
+        oyunOlustur();
+        BOyna();
+    }//GEN-LAST:event_baslaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -597,16 +1028,21 @@ public class Arayüz extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Arayüz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Arayüz.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Arayüz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Arayüz.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Arayüz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Arayüz.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Arayüz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Arayüz.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
