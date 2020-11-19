@@ -169,8 +169,8 @@ public class Arayüz extends javax.swing.JFrame {
             tempxuzaklik = oyuncuA.AktifKonumu[0] - altinlar.get(i).konum[0];
             tempyuzaklik = oyuncuA.AktifKonumu[1] - altinlar.get(i).konum[1];
 
-            if (Math.abs(tempxuzaklik + tempyuzaklik) < enkAdim && altinlar.get(i).gizli == false) {
-                enkAdim = Math.abs(tempxuzaklik + tempyuzaklik);
+            if (Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik) < enkAdim && altinlar.get(i).gizli == false) {
+                enkAdim = Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik);
                 System.out.println(enkAdim+"ennkkAdim");
                 hedefAltinx = altinlar.get(i).konum[0];
                 hedefAltiny = altinlar.get(i).konum[1];
