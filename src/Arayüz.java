@@ -2,11 +2,15 @@
 import java.awt.Toolkit;
 import javax.swing.JButton;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.Timer;
 
 
 /*
@@ -29,7 +33,7 @@ public class Arayüz extends javax.swing.JFrame {
     ButtonHandler buttonHandler = new ButtonHandler();
     public static Kare[][] kareler;
     public static ArrayList<Kare> altinlar = new ArrayList<>();
-
+    public int hareketBeklemeSuresi=1000;
     Oyuncu oyuncuA = new Oyuncu();
     Oyuncu oyuncuB = new Oyuncu();
     Oyuncu oyuncuC = new Oyuncu();
@@ -42,6 +46,22 @@ public class Arayüz extends javax.swing.JFrame {
         this.setLocation((EkranX - 1050) / 2, (EkranY - 800) / 2);  // Görünüm olarak açılan pencerenin ekranın tam ortasında çıkması için
         this.setSize(1050, 800);
 
+    }
+
+    public void parayaz() {
+        System.out.println("A: " + oyuncuA.mevcutAltinMiktari);
+        System.out.println("B" + oyuncuB.mevcutAltinMiktari);
+        System.out.println("C: " + oyuncuC.mevcutAltinMiktari);
+        System.out.println("D: " + oyuncuD.mevcutAltinMiktari);
+        System.out.println("");
+        if (oyuncuA.mevcutAltinMiktari <= 0 && oyuncuB.mevcutAltinMiktari <= 0 && oyuncuC.mevcutAltinMiktari <= 0 && oyuncuD.mevcutAltinMiktari <= 0) {
+            try {//oyun bitince x saniye bekle
+                Thread.sleep(5000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Arayüz.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            System.exit(0);
+        }
     }
 
     public void oyunOlustur() {
@@ -75,7 +95,6 @@ public class Arayüz extends javax.swing.JFrame {
             if (gizliAltin == 0) {
                 gizliAltin = 1;
             }
-            // System.out.println(((tahtaXSayisi * tahtaYSayisi) * 20) / 100);
             while (uretilenaltin < tahtaXSayisi * tahtaYSayisi * Integer.parseInt(altinOrani.getText()) / 100) {
                 x = rnd.nextInt(tahtaYSayisi);
                 y = rnd.nextInt(tahtaXSayisi);
@@ -172,427 +191,469 @@ public class Arayüz extends javax.swing.JFrame {
     }
 
     public void AOyna() {
-        int enkAdim = Integer.MAX_VALUE;
-        int xuzaklik = 0, yuzaklik = 0;
-        int silinecekAltinIndex = 0;
-        int hedefMaliyeti = 0;
-        int hedefAltinx = 0, hedefAltiny = 0;
-        if (oyuncuA.hedefAltinKonum[0] != -1) {
-            if (kareler[oyuncuA.hedefAltinKonum[0]][oyuncuA.hedefAltinKonum[1]].altinMiktari == 0) {
-                oyuncuA.hedefAltinKonum[0] = -1;
-                oyuncuA.hedefAltinKonum[1] = -1;
-            }
-        }
-        if (oyuncuA.hedefAltinKonum[0] == -1 && oyuncuA.hedefAltinKonum[1] == -1) {//oyuncu hedefi yoksa
-            for (int i = 0; i < altinlar.size(); i++) {
-                int tempxuzaklik, tempyuzaklik;
-                tempxuzaklik = oyuncuA.AktifKonumu[0] - altinlar.get(i).konum[0];
-                tempyuzaklik = oyuncuA.AktifKonumu[1] - altinlar.get(i).konum[1];
-
-                if (Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik) < enkAdim && altinlar.get(i).gizli == false) {
-                    enkAdim = Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik);
-                    System.out.println(enkAdim + "ennkkAdim");
-                    hedefAltinx = altinlar.get(i).konum[0];
-                    hedefAltiny = altinlar.get(i).konum[1];
-                    xuzaklik = tempxuzaklik;
-                    yuzaklik = tempyuzaklik;
-                    silinecekAltinIndex = i;
-                }
-            }
-            if (hedefAltinx == 0 && hedefAltiny == 0) {//eğer oyuncu herhangi bir altını hedefleyemiyorsa
-                return;
-            }
-            oyuncuA.hedefAltinKonum[0] = hedefAltinx;
-            oyuncuA.hedefAltinKonum[1] = hedefAltiny;
-            hedefMaliyeti = Integer.parseInt(AHedefMaaliyet1.getText());
-        } else {//oyuncunun hedefi varsa silinecek altının arraylistteki yeri tespit edilir
-            for (int i = 0; i < altinlar.size(); i++) {
-                if (altinlar.get(i).konum[0] == oyuncuA.hedefAltinKonum[0] && altinlar.get(i).konum[1] == oyuncuA.hedefAltinKonum[1]) {
-                    silinecekAltinIndex = i;
-                }
-            }
-            xuzaklik = oyuncuA.AktifKonumu[0] - oyuncuA.hedefAltinKonum[0];
-            yuzaklik = oyuncuA.AktifKonumu[1] - oyuncuA.hedefAltinKonum[1];
-            hedefMaliyeti = 0;
-        }
-
-        int adim = 0;
-        System.out.println(oyuncuA.hedefAltinKonum[0] + " x hedeflenen" + oyuncuA.hedefAltinKonum[1] + "y hedeflenen");
-        JButtonKare[oyuncuA.hedefAltinKonum[0]][oyuncuA.hedefAltinKonum[1]].setText("<html>" + kareler[oyuncuA.hedefAltinKonum[0]][oyuncuA.hedefAltinKonum[1]].altinMiktari + "<br>" + "X" + "</html>");
-
-        adim = hareketEttir(xuzaklik, yuzaklik, adim, oyuncuA, "A", Color.RED);
-
-        //System.out.println(oyuncuA.AktifKonumu[0]+"m "+oyuncuA.AktifKonumu[1]+"u "+oyuncuA.hedefAltinKonum[0]+" b"+oyuncuA.hedefAltinKonum[1]);
-        oyuncuA.harcananAltinMiktari += Integer.parseInt(AHamleMaaliyet.getText()) * adim + hedefMaliyeti;
-        oyuncuA.mevcutAltinMiktari = oyuncuA.mevcutAltinMiktari - oyuncuA.harcananAltinMiktari;
-        oyuncuA.kasadakiAltinMiktari += oyuncuA.harcananAltinMiktari;
-        if (oyuncuA.AktifKonumu[0] == oyuncuA.hedefAltinKonum[0] && oyuncuA.AktifKonumu[1] == oyuncuA.hedefAltinKonum[1]) {
-            oyuncuA.mevcutAltinMiktari += kareler[oyuncuA.hedefAltinKonum[0]][oyuncuA.hedefAltinKonum[1]].altinMiktari;
-            oyuncuA.toplananAltinMiktari += kareler[oyuncuA.hedefAltinKonum[0]][oyuncuA.hedefAltinKonum[1]].altinMiktari;
-
-        }
-        if (Math.abs(yuzaklik) + Math.abs(xuzaklik) <= 3) {//eğer altın a kullanıcısının adımları içerisinde ise altını alacağı için listeden silmemiz gerekir
-            altinlar.remove(silinecekAltinIndex);
-            kareler[oyuncuA.hedefAltinKonum[0]][oyuncuA.hedefAltinKonum[1]].altinMiktari = 0;
-            kareler[oyuncuA.hedefAltinKonum[0]][oyuncuA.hedefAltinKonum[1]].gizli = false;
-            oyuncuA.hedefAltinKonum[0] = -1;    //oyuncu hedefini tmamladığı için artık bir hedefi yok
-            oyuncuA.hedefAltinKonum[1] = -1;    //oyuncu hedefini tmamladığı için artık bir hedefi yok
-
-        }
-        System.out.println("harcanan:" + oyuncuA.harcananAltinMiktari + " kasadakiAltın" + oyuncuA.kasadakiAltinMiktari + " Mevcut altın" + oyuncuA.mevcutAltinMiktari + "toplanan altın" + oyuncuA.toplananAltinMiktari);
-
-    }
-
-    public void BOyna() {
-        int enkMaliyet = Integer.MIN_VALUE;
-        int xuzaklik = 0, yuzaklik = 0;
-        int silinecekAltinIndex = 0;
-        int hedefMaliyeti = 0;
-        int hedefAltinx = 0, hedefAltiny = 0;
-        if (oyuncuB.hedefAltinKonum[0] != -1) {
-            if (kareler[oyuncuB.hedefAltinKonum[0]][oyuncuB.hedefAltinKonum[1]].altinMiktari == 0) {
-                oyuncuB.hedefAltinKonum[0] = -1;
-                oyuncuB.hedefAltinKonum[1] = -1;
-            }
-        }
-        if (oyuncuB.hedefAltinKonum[0] == -1 && oyuncuB.hedefAltinKonum[1] == -1) {//oyuncu hedefi yoksa
-            System.out.println("hedef yok");
-            for (int i = 0; i < altinlar.size(); i++) {
-                int tempxuzaklik, tempyuzaklik;
-                tempxuzaklik = oyuncuB.AktifKonumu[0] - altinlar.get(i).konum[0];
-                tempyuzaklik = oyuncuB.AktifKonumu[1] - altinlar.get(i).konum[1];
-
-                int kar = (altinlar.get(i).altinMiktari - (((Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik)) * Integer.parseInt(BHamleMaaliyet1.getText())) + Integer.parseInt(BHedefMaaliyet.getText())));
-                if (kar > enkMaliyet && altinlar.get(i).gizli == false) {
-                    enkMaliyet = kar;
-                    hedefAltinx = altinlar.get(i).konum[0];
-                    hedefAltiny = altinlar.get(i).konum[1];
-                    xuzaklik = tempxuzaklik;
-                    yuzaklik = tempyuzaklik;
-                    silinecekAltinIndex = i;
-
-                }
-            }
-            if (hedefAltinx == 0 && hedefAltiny == 0) {//eğer oyuncu herhangi bir altını hedefleyemiyorsa
-                return;
-            }
-            oyuncuB.hedefAltinKonum[0] = hedefAltinx;
-            oyuncuB.hedefAltinKonum[1] = hedefAltiny;
-            hedefMaliyeti = Integer.parseInt(BHedefMaaliyet.getText());
+        parayaz();
+        if (oyuncuA.mevcutAltinMiktari <= 0) {
+            BOyna();
+            JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setBackground(new java.awt.Color(240, 240, 240));
+            JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setText("");
         } else {
-            System.out.println("hedef var");
-            for (int i = 0; i < altinlar.size(); i++) {
-                if (altinlar.get(i).konum[0] == oyuncuB.hedefAltinKonum[0] && altinlar.get(i).konum[1] == oyuncuB.hedefAltinKonum[1]) {
-                    silinecekAltinIndex = i;
-                }
-            }
-            xuzaklik = oyuncuB.AktifKonumu[0] - oyuncuB.hedefAltinKonum[0];
-            yuzaklik = oyuncuB.AktifKonumu[1] - oyuncuB.hedefAltinKonum[1];
-            hedefMaliyeti = 0;
-        }
-        System.out.println(xuzaklik + " b için" + yuzaklik);
-        int adim = 0;
-        System.out.println(oyuncuB.hedefAltinKonum[0] + " x hedeflenen" + oyuncuB.hedefAltinKonum[1] + "y hedeflenen");
-        JButtonKare[oyuncuB.hedefAltinKonum[0]][oyuncuB.hedefAltinKonum[1]].setText("<html>" + kareler[oyuncuB.hedefAltinKonum[0]][oyuncuB.hedefAltinKonum[1]].altinMiktari + "<br>" + "X" + "</html>");
-
-        adim = hareketEttir(xuzaklik, yuzaklik, adim, oyuncuB, "B", Color.ORANGE);
-        System.out.println("adim gibi adim: " + adim);
-
-        //System.out.println(oyuncuB.AktifKonumu[0]+"m "+oyuncuB.AktifKonumu[1]+"u "+oyuncuB.hedefAltinKonum[0]+" b"+oyuncuB.hedefAltinKonum[1]);
-        oyuncuB.harcananAltinMiktari += Integer.parseInt(BHamleMaaliyet1.getText()) * adim + hedefMaliyeti;
-        oyuncuB.mevcutAltinMiktari = oyuncuB.mevcutAltinMiktari - oyuncuB.harcananAltinMiktari;
-        oyuncuB.kasadakiAltinMiktari += oyuncuB.harcananAltinMiktari;
-        if (oyuncuB.AktifKonumu[0] == oyuncuB.hedefAltinKonum[0] && oyuncuB.AktifKonumu[1] == oyuncuB.hedefAltinKonum[1]) {
-            oyuncuB.mevcutAltinMiktari += kareler[oyuncuB.hedefAltinKonum[0]][oyuncuB.hedefAltinKonum[1]].altinMiktari;
-            oyuncuB.toplananAltinMiktari += kareler[oyuncuB.hedefAltinKonum[0]][oyuncuB.hedefAltinKonum[1]].altinMiktari;
-
-        }
-        if (Math.abs(yuzaklik) + Math.abs(xuzaklik) <= 3) {//eğer altın a kullanıcısının adımları içerisinde ise altını alacağı için listeden silmemiz gerekir
-            altinlar.remove(silinecekAltinIndex);
-            kareler[oyuncuB.hedefAltinKonum[0]][oyuncuB.hedefAltinKonum[1]].altinMiktari = 0;
-            kareler[oyuncuB.hedefAltinKonum[0]][oyuncuB.hedefAltinKonum[1]].gizli = false;
-            oyuncuB.hedefAltinKonum[0] = -1;    //oyuncu hedefini tmamladığı için artık bir hedefi yok
-            oyuncuB.hedefAltinKonum[1] = -1;    //oyuncu hedefini tmamladığı için artık bir hedefi yok
-        }
-
-        System.out.println(
-                Integer.parseInt(CHamleMaaliyet1.getText()) * adim + hedefMaliyeti + "harcanan:" + oyuncuB.harcananAltinMiktari + " kasadakiAltın" + oyuncuB.kasadakiAltinMiktari + " Mevcut altın" + oyuncuB.mevcutAltinMiktari + "toplanan altın" + oyuncuB.toplananAltinMiktari);
-
-    }
-
-    public void COyna() {
-        int enkMaliyet = Integer.MIN_VALUE;
-        int xuzaklik = 0, yuzaklik = 0;
-        int silinecekAltinIndex = 0;
-        int hedefMaliyet = 0;
-        int hedefAltinx = 0, hedefAltiny = 0;
-        if (oyuncuC.hedefAltinKonum[0] != -1) {
-            if (kareler[oyuncuC.hedefAltinKonum[0]][oyuncuC.hedefAltinKonum[1]].altinMiktari == 0) {
-                oyuncuC.hedefAltinKonum[0] = -1;
-                oyuncuC.hedefAltinKonum[1] = -1;
-            }
-        }
-        if (oyuncuC.hedefAltinKonum[0] == -1 && oyuncuC.hedefAltinKonum[1] == -1) {//oyuncu hedefi yoksa
-            for (int i = 0; i < altinlar.size(); i++) {
-                int tempxuzaklik, tempyuzaklik;
-                tempxuzaklik = oyuncuC.AktifKonumu[0] - altinlar.get(i).konum[0];
-                tempyuzaklik = oyuncuC.AktifKonumu[1] - altinlar.get(i).konum[1];
-                if (altinlar.get(i).gizli == true) {
-                    JButtonKare[altinlar.get(i).konum[0]][altinlar.get(i).konum[1]].setBackground(Color.yellow);
-                    altinlar.get(i).gizli = false;
-                }
-                int kar = (altinlar.get(i).altinMiktari - (((Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik)) * Integer.parseInt(CHamleMaaliyet1.getText())) + Integer.parseInt(CHedefMaaliyet.getText())));
-                if (kar > enkMaliyet && altinlar.get(i).gizli == false) {
-                    enkMaliyet = kar;
-                    hedefAltinx = altinlar.get(i).konum[0];
-                    hedefAltiny = altinlar.get(i).konum[1];
-                    xuzaklik = tempxuzaklik;
-                    yuzaklik = tempyuzaklik;
-                    silinecekAltinIndex = i;
-                }
-            }
-            if (hedefAltinx == 0 && hedefAltiny == 0) {//eğer oyuncu herhangi bir altını hedefleyemiyorsa
-                return;
-            }
-            oyuncuC.hedefAltinKonum[0] = hedefAltinx;
-            oyuncuC.hedefAltinKonum[1] = hedefAltiny;
-            hedefMaliyet = Integer.parseInt(CHedefMaaliyet.getText());
-        } else {
-            for (int i = 0; i < altinlar.size(); i++) {
-                if (altinlar.get(i).konum[0] == oyuncuC.hedefAltinKonum[0] && altinlar.get(i).konum[1] == oyuncuC.hedefAltinKonum[1]) {
-                    silinecekAltinIndex = i;
-                }
-            }
-            xuzaklik = oyuncuC.AktifKonumu[0] - oyuncuC.hedefAltinKonum[0];
-            yuzaklik = oyuncuC.AktifKonumu[1] - oyuncuC.hedefAltinKonum[1];
-            hedefMaliyet = 0;
-        }
-        System.out.println(enkMaliyet + "enk");
-        System.out.println(xuzaklik + " C için" + yuzaklik);
-
-        int adim = 0;
-        System.out.println(oyuncuC.hedefAltinKonum[0] + " x hedeflenen" + oyuncuC.hedefAltinKonum[1] + "y hedeflenen");
-        JButtonKare[oyuncuC.hedefAltinKonum[0]][oyuncuC.hedefAltinKonum[1]].setText("<html>" + kareler[oyuncuC.hedefAltinKonum[0]][oyuncuC.hedefAltinKonum[1]].altinMiktari + "<br>" + "X" + "</html>");
-
-        adim = hareketEttir(xuzaklik, yuzaklik, adim, oyuncuC, "C", Color.BLUE);
-
-        //System.out.println(oyuncuC.AktifKonumu[0]+"m "+oyuncuC.AktifKonumu[1]+"u "+oyuncuC.hedefAltinKonum[0]+" b"+oyuncuC.hedefAltinKonum[1]);
-        oyuncuC.harcananAltinMiktari += Integer.parseInt(CHamleMaaliyet1.getText()) * adim + hedefMaliyet;
-        oyuncuC.mevcutAltinMiktari = oyuncuC.mevcutAltinMiktari - oyuncuC.harcananAltinMiktari;
-        oyuncuC.kasadakiAltinMiktari += oyuncuC.harcananAltinMiktari;
-        if (oyuncuC.AktifKonumu[0] == oyuncuC.hedefAltinKonum[0] && oyuncuC.AktifKonumu[1] == oyuncuC.hedefAltinKonum[1]) {
-            oyuncuC.mevcutAltinMiktari += kareler[oyuncuC.hedefAltinKonum[0]][oyuncuC.hedefAltinKonum[1]].altinMiktari;
-            oyuncuC.toplananAltinMiktari += kareler[oyuncuC.hedefAltinKonum[0]][oyuncuC.hedefAltinKonum[1]].altinMiktari;
-
-        }
-        if (Math.abs(yuzaklik) + Math.abs(xuzaklik) <= 3) {//eğer altın a kullanıcısının adımları içerisinde ise altını alacağı için listeden silmemiz gerekir
-            altinlar.remove(silinecekAltinIndex);
-            kareler[oyuncuC.hedefAltinKonum[0]][oyuncuC.hedefAltinKonum[1]].altinMiktari = 0;
-            kareler[oyuncuC.hedefAltinKonum[0]][oyuncuC.hedefAltinKonum[1]].gizli = false;
-            oyuncuC.hedefAltinKonum[0] = -1;    //oyuncu hedefini tmamladığı için artık bir hedefi yok
-            oyuncuC.hedefAltinKonum[1] = -1;    //oyuncu hedefini tmamladığı için artık bir hedefi yok
-        }
-
-        System.out.println(
-                "harcanan:" + oyuncuC.harcananAltinMiktari + " kasadakiAltın" + oyuncuC.kasadakiAltinMiktari + " Mevcut altın" + oyuncuC.mevcutAltinMiktari + "toplanan altın" + oyuncuC.toplananAltinMiktari);
-
-    }
-
-    public void DOyna() {
-
-        ArrayList<Kare> dAltinlar = (ArrayList<Kare>) altinlar.clone();
-        if (oyuncuA.hedefAltinKonum[0] == -1) { //anın hedefi yoksa
             int enkAdim = Integer.MAX_VALUE;
             int xuzaklik = 0, yuzaklik = 0;
             int silinecekAltinIndex = 0;
             int hedefMaliyeti = 0;
             int hedefAltinx = 0, hedefAltiny = 0;
-            for (int i = 0; i < altinlar.size(); i++) {
-                int tempxuzaklik, tempyuzaklik;
-                tempxuzaklik = oyuncuA.AktifKonumu[0] - altinlar.get(i).konum[0];
-                tempyuzaklik = oyuncuA.AktifKonumu[1] - altinlar.get(i).konum[1];
-
-                if (Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik) < enkAdim && altinlar.get(i).gizli == false) {
-                    enkAdim = Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik);
-                    System.out.println(enkAdim + "ennkkAdim");
-                    hedefAltinx = altinlar.get(i).konum[0];
-                    hedefAltiny = altinlar.get(i).konum[1];
-                    xuzaklik = tempxuzaklik;
-                    yuzaklik = tempyuzaklik;
-                    silinecekAltinIndex = i;
+            if (oyuncuA.hedefAltinKonum[0] != -1) {
+                if (kareler[oyuncuA.hedefAltinKonum[0]][oyuncuA.hedefAltinKonum[1]].altinMiktari == 0) {
+                    oyuncuA.hedefAltinKonum[0] = -1;
+                    oyuncuA.hedefAltinKonum[1] = -1;
                 }
             }
-            int aUzaklik = Math.abs(oyuncuA.AktifKonumu[0] - hedefAltinx) + Math.abs(oyuncuA.AktifKonumu[1] - hedefAltiny);
-            int dUzaklik = Math.abs(oyuncuD.AktifKonumu[0] - hedefAltinx) + Math.abs(oyuncuD.AktifKonumu[1] - hedefAltiny);
-            if (dUzaklik > aUzaklik && dUzaklik > 3) {
-                dAltinlar.remove(altinlar.get(silinecekAltinIndex));
-            }
-        } else {// a nın hedefi varsa
-            int aUzaklik = Math.abs(oyuncuA.AktifKonumu[0] - oyuncuA.hedefAltinKonum[0]) + Math.abs(oyuncuA.AktifKonumu[1] - oyuncuA.hedefAltinKonum[1]);
-            int dUzaklik = Math.abs(oyuncuD.AktifKonumu[0] - oyuncuA.hedefAltinKonum[0]) + Math.abs(oyuncuD.AktifKonumu[1] - oyuncuA.hedefAltinKonum[1]);
-            if (dUzaklik > aUzaklik && dUzaklik > 3) {
-                for (int k = 0; k < altinlar.size(); k++) { // a nın hedefi varsa yine uzaklıkları karşılaştır a daha önce ulaşıyorsa karşılaştırıp dAltinlar dan sil
-                    if (Arrays.equals(altinlar.get(k).konum, oyuncuA.hedefAltinKonum)) {
-                        dAltinlar.remove(altinlar.get(k));
+            if (oyuncuA.hedefAltinKonum[0] == -1 && oyuncuA.hedefAltinKonum[1] == -1) {//oyuncu hedefi yoksa
+                for (int i = 0; i < altinlar.size(); i++) {
+                    int tempxuzaklik, tempyuzaklik;
+                    tempxuzaklik = oyuncuA.AktifKonumu[0] - altinlar.get(i).konum[0];
+                    tempyuzaklik = oyuncuA.AktifKonumu[1] - altinlar.get(i).konum[1];
+
+                    if (Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik) < enkAdim && altinlar.get(i).gizli == false) {
+                        enkAdim = Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik);
+                        hedefAltinx = altinlar.get(i).konum[0];
+                        hedefAltiny = altinlar.get(i).konum[1];
+                        xuzaklik = tempxuzaklik;
+                        yuzaklik = tempyuzaklik;
+                        silinecekAltinIndex = i;
                     }
                 }
-            }
-        }
-
-        if (oyuncuB.hedefAltinKonum[0] == -1) {
-            int enkMaliyet = Integer.MIN_VALUE;
-            int xuzaklik = 0, yuzaklik = 0;
-            int silinecekAltinIndex = 0;
-            int hedefMaliyeti = 0;
-            int hedefAltinx = 0, hedefAltiny = 0;
-            for (int i = 0; i < altinlar.size(); i++) {
-                int tempxuzaklik, tempyuzaklik;
-                tempxuzaklik = oyuncuB.AktifKonumu[0] - altinlar.get(i).konum[0];
-                tempyuzaklik = oyuncuB.AktifKonumu[1] - altinlar.get(i).konum[1];
-
-                int kar = (altinlar.get(i).altinMiktari - (((Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik)) * Integer.parseInt(BHamleMaaliyet1.getText())) + Integer.parseInt(BHedefMaaliyet.getText())));
-                if (kar > enkMaliyet && altinlar.get(i).gizli == false) {
-                    enkMaliyet = kar;
-                    hedefAltinx = altinlar.get(i).konum[0];
-                    hedefAltiny = altinlar.get(i).konum[1];
-                    xuzaklik = tempxuzaklik;
-                    yuzaklik = tempyuzaklik;
-                    silinecekAltinIndex = i;
-
+                if (hedefAltinx == 0 && hedefAltiny == 0) {//eğer oyuncu herhangi bir altını hedefleyemiyorsa
+                    return;
                 }
-            }
-            int bUzaklik = Math.abs(oyuncuB.AktifKonumu[0] - hedefAltinx) + Math.abs(oyuncuB.AktifKonumu[1] - hedefAltiny);
-            int dUzaklik = Math.abs(oyuncuD.AktifKonumu[0] - hedefAltinx) + Math.abs(oyuncuD.AktifKonumu[1] - hedefAltiny);
-            if (dUzaklik > bUzaklik && dUzaklik > 3) {
-                dAltinlar.remove(altinlar.get(silinecekAltinIndex));
-            }
-        } else {// B nın hedefi varsa
-            int bUzaklik = Math.abs(oyuncuB.AktifKonumu[0] - oyuncuB.hedefAltinKonum[0]) + Math.abs(oyuncuB.AktifKonumu[1] - oyuncuB.hedefAltinKonum[1]);
-            int dUzaklik = Math.abs(oyuncuD.AktifKonumu[0] - oyuncuB.hedefAltinKonum[0]) + Math.abs(oyuncuD.AktifKonumu[1] - oyuncuB.hedefAltinKonum[1]);
-            if (dUzaklik > bUzaklik && dUzaklik > 3) {
-                for (int k = 0; k < altinlar.size(); k++) { // b nın hedefi varsa yine uzaklıkları karşılaştır b daha önce ulaşıyorsa karşılaştırıp dAltinlar dan sil
-                    if (Arrays.equals(altinlar.get(k).konum, oyuncuB.hedefAltinKonum)) {
-                        dAltinlar.remove(altinlar.get(k));
+                oyuncuA.hedefAltinKonum[0] = hedefAltinx;
+                oyuncuA.hedefAltinKonum[1] = hedefAltiny;
+                hedefMaliyeti = Integer.parseInt(AHedefMaaliyet1.getText());
+            } else {//oyuncunun hedefi varsa silinecek altının arraylistteki yeri tespit edilir
+                for (int i = 0; i < altinlar.size(); i++) {
+                    if (altinlar.get(i).konum[0] == oyuncuA.hedefAltinKonum[0] && altinlar.get(i).konum[1] == oyuncuA.hedefAltinKonum[1]) {
+                        silinecekAltinIndex = i;
                     }
                 }
+                xuzaklik = oyuncuA.AktifKonumu[0] - oyuncuA.hedefAltinKonum[0];
+                yuzaklik = oyuncuA.AktifKonumu[1] - oyuncuA.hedefAltinKonum[1];
+                hedefMaliyeti = 0;
             }
-        }
 
-        if (oyuncuC.hedefAltinKonum[0] == -1) {
-            int enkMaliyet = Integer.MIN_VALUE;
-            int xuzaklik = 0, yuzaklik = 0;
-            int silinecekAltinIndex = 0;
-            int hedefMaliyeti = 0;
-            int hedefAltinx = 0, hedefAltiny = 0;
-            for (int i = 0; i < altinlar.size(); i++) {
-                int tempxuzaklik, tempyuzaklik;
-                tempxuzaklik = oyuncuC.AktifKonumu[0] - altinlar.get(i).konum[0];
-                tempyuzaklik = oyuncuC.AktifKonumu[1] - altinlar.get(i).konum[1];
-                if (altinlar.get(i).gizli == true) {
-                    JButtonKare[altinlar.get(i).konum[0]][altinlar.get(i).konum[1]].setBackground(Color.yellow);
-                    altinlar.get(i).gizli = false;
-                }
-                int kar = (altinlar.get(i).altinMiktari - (((Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik)) * Integer.parseInt(CHamleMaaliyet1.getText())) + Integer.parseInt(CHedefMaaliyet.getText())));
-                if (kar > enkMaliyet && altinlar.get(i).gizli == false) {
-                    enkMaliyet = kar;
-                    hedefAltinx = altinlar.get(i).konum[0];
-                    hedefAltiny = altinlar.get(i).konum[1];
-                    xuzaklik = tempxuzaklik;
-                    yuzaklik = tempyuzaklik;
-                    silinecekAltinIndex = i;
-                }
-            }
-            int cUzaklik = Math.abs(oyuncuC.AktifKonumu[0] - hedefAltinx) + Math.abs(oyuncuC.AktifKonumu[1] - hedefAltiny);
-            int dUzaklik = Math.abs(oyuncuD.AktifKonumu[0] - hedefAltinx) + Math.abs(oyuncuD.AktifKonumu[1] - hedefAltiny);
-            if (dUzaklik > cUzaklik && dUzaklik > 3) {
-                dAltinlar.remove(altinlar.get(silinecekAltinIndex));
-            }
-        } else {// C nın hedefi varsa
-            int cUzaklik = Math.abs(oyuncuC.AktifKonumu[0] - oyuncuC.hedefAltinKonum[0]) + Math.abs(oyuncuC.AktifKonumu[1] - oyuncuC.hedefAltinKonum[1]);
-            int dUzaklik = Math.abs(oyuncuD.AktifKonumu[0] - oyuncuC.hedefAltinKonum[0]) + Math.abs(oyuncuD.AktifKonumu[1] - oyuncuC.hedefAltinKonum[1]);
-            if (dUzaklik > cUzaklik && dUzaklik > 3) {
-                for (int k = 0; k < altinlar.size(); k++) { // c nın hedefi varsa yine uzaklıkları karşılaştır c daha önce ulaşıyorsa karşılaştırıp dAltinlar dan sil
-                    if (Arrays.equals(altinlar.get(k).konum, oyuncuC.hedefAltinKonum)) {
-                        dAltinlar.remove(altinlar.get(k));
+            int adim = 0;
+            JButtonKare[oyuncuA.hedefAltinKonum[0]][oyuncuA.hedefAltinKonum[1]].setText("<html>" + kareler[oyuncuA.hedefAltinKonum[0]][oyuncuA.hedefAltinKonum[1]].altinMiktari + "<br>" + "X" + "</html>");
+
+            adim = hareketEttir(xuzaklik, yuzaklik, adim, oyuncuA, "A", Color.RED);
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+
+                        Thread.sleep(3500);
+                        BOyna();
+
+                    } catch (InterruptedException e) {
                     }
-                }
-            }
-        }
-
-        int enkMaliyet = Integer.MIN_VALUE;
-        int xuzaklik = 0, yuzaklik = 0;
-        int silinecekAltinIndex = 0;
-        int hedefMaliyeti = 0;
-        int hedefAltinx = 0, hedefAltiny = 0;
-        if (oyuncuD.hedefAltinKonum[0] != -1) {
-            if (kareler[oyuncuD.hedefAltinKonum[0]][oyuncuD.hedefAltinKonum[1]].altinMiktari == 0) {
-                oyuncuD.hedefAltinKonum[0] = -1;
-                oyuncuD.hedefAltinKonum[1] = -1;
-            }
-        }
-        if (oyuncuD.hedefAltinKonum[0] == -1 && oyuncuD.hedefAltinKonum[1] == -1) {//oyuncu hedefi yoksa
-            System.out.println("hedef yok");
-            for (int i = 0; i < dAltinlar.size(); i++) {
-                int tempxuzaklik, tempyuzaklik;
-                tempxuzaklik = oyuncuD.AktifKonumu[0] - dAltinlar.get(i).konum[0];
-                tempyuzaklik = oyuncuD.AktifKonumu[1] - dAltinlar.get(i).konum[1];
-
-                int kar = (dAltinlar.get(i).altinMiktari - (((Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik)) * Integer.parseInt(BHamleMaaliyet1.getText())) + Integer.parseInt(BHedefMaaliyet.getText())));
-                if (kar > enkMaliyet && dAltinlar.get(i).gizli == false) {
-                    enkMaliyet = kar;
-                    hedefAltinx = dAltinlar.get(i).konum[0];
-                    hedefAltiny = dAltinlar.get(i).konum[1];
-                    xuzaklik = tempxuzaklik;
-                    yuzaklik = tempyuzaklik;
-                    silinecekAltinIndex = i;
 
                 }
+            }.start();
+            oyuncuA.harcananAltinMiktari += Integer.parseInt(AHamleMaaliyet.getText()) + hedefMaliyeti;
+            oyuncuA.mevcutAltinMiktari = oyuncuA.mevcutAltinMiktari - oyuncuA.harcananAltinMiktari;
+            oyuncuA.kasadakiAltinMiktari += oyuncuA.harcananAltinMiktari;
+            if (oyuncuA.AktifKonumu[0] == oyuncuA.hedefAltinKonum[0] && oyuncuA.AktifKonumu[1] == oyuncuA.hedefAltinKonum[1]) {
+                oyuncuA.mevcutAltinMiktari += kareler[oyuncuA.hedefAltinKonum[0]][oyuncuA.hedefAltinKonum[1]].altinMiktari;
+                oyuncuA.toplananAltinMiktari += kareler[oyuncuA.hedefAltinKonum[0]][oyuncuA.hedefAltinKonum[1]].altinMiktari;
+
             }
-            if (hedefAltinx == 0 && hedefAltiny == 0) {//eğer oyuncu herhangi bir altını hedefleyemiyorsa
-                return;
+            if (Math.abs(yuzaklik) + Math.abs(xuzaklik) <= 3) {//eğer altın a kullanıcısının adımları içerisinde ise altını alacağı için listeden silmemiz gerekir
+                altinlar.remove(silinecekAltinIndex);
+                kareler[oyuncuA.hedefAltinKonum[0]][oyuncuA.hedefAltinKonum[1]].altinMiktari = 0;
+                kareler[oyuncuA.hedefAltinKonum[0]][oyuncuA.hedefAltinKonum[1]].gizli = false;
+                oyuncuA.hedefAltinKonum[0] = -1;    //oyuncu hedefini tmamladığı için artık bir hedefi yok
+                oyuncuA.hedefAltinKonum[1] = -1;    //oyuncu hedefini tmamladığı için artık bir hedefi yok
+
             }
-            oyuncuD.hedefAltinKonum[0] = hedefAltinx;
-            oyuncuD.hedefAltinKonum[1] = hedefAltiny;
-            hedefMaliyeti = Integer.parseInt(BHedefMaaliyet.getText());
+        }
+    }
+
+    public void BOyna() {
+        parayaz();
+        if (oyuncuB.mevcutAltinMiktari <= 0) {
+            COyna();
+            JButtonKare[oyuncuB.AktifKonumu[0]][oyuncuB.AktifKonumu[1]].setBackground(new java.awt.Color(240, 240, 240));
+            JButtonKare[oyuncuB.AktifKonumu[0]][oyuncuB.AktifKonumu[1]].setText("");
         } else {
-            System.out.println("hedef var");
-            for (int i = 0; i < dAltinlar.size(); i++) {
-                if (dAltinlar.get(i).konum[0] == oyuncuD.hedefAltinKonum[0] && dAltinlar.get(i).konum[1] == oyuncuD.hedefAltinKonum[1]) {
-                    silinecekAltinIndex = i;
+            int enkMaliyet = Integer.MIN_VALUE;
+            int xuzaklik = 0, yuzaklik = 0;
+            int silinecekAltinIndex = 0;
+            int hedefMaliyeti = 0;
+            int hedefAltinx = 0, hedefAltiny = 0;
+            if (oyuncuB.hedefAltinKonum[0] != -1) {
+                if (kareler[oyuncuB.hedefAltinKonum[0]][oyuncuB.hedefAltinKonum[1]].altinMiktari == 0) {
+                    oyuncuB.hedefAltinKonum[0] = -1;
+                    oyuncuB.hedefAltinKonum[1] = -1;
                 }
             }
-            xuzaklik = oyuncuD.AktifKonumu[0] - oyuncuD.hedefAltinKonum[0];
-            yuzaklik = oyuncuD.AktifKonumu[1] - oyuncuD.hedefAltinKonum[1];
-            hedefMaliyeti = 0;
+            if (oyuncuB.hedefAltinKonum[0] == -1 && oyuncuB.hedefAltinKonum[1] == -1) {//oyuncu hedefi yoksa
+                for (int i = 0; i < altinlar.size(); i++) {
+                    int tempxuzaklik, tempyuzaklik;
+                    tempxuzaklik = oyuncuB.AktifKonumu[0] - altinlar.get(i).konum[0];
+                    tempyuzaklik = oyuncuB.AktifKonumu[1] - altinlar.get(i).konum[1];
+
+                    int kar = (altinlar.get(i).altinMiktari - (((Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik)) * Integer.parseInt(BHamleMaaliyet1.getText())) + Integer.parseInt(BHedefMaaliyet.getText())));
+                    if (kar > enkMaliyet && altinlar.get(i).gizli == false) {
+                        enkMaliyet = kar;
+                        hedefAltinx = altinlar.get(i).konum[0];
+                        hedefAltiny = altinlar.get(i).konum[1];
+                        xuzaklik = tempxuzaklik;
+                        yuzaklik = tempyuzaklik;
+                        silinecekAltinIndex = i;
+
+                    }
+                }
+                if (hedefAltinx == 0 && hedefAltiny == 0) {//eğer oyuncu herhangi bir altını hedefleyemiyorsa
+                    return;
+                }
+                oyuncuB.hedefAltinKonum[0] = hedefAltinx;
+                oyuncuB.hedefAltinKonum[1] = hedefAltiny;
+                hedefMaliyeti = Integer.parseInt(BHedefMaaliyet.getText());
+            } else {
+                for (int i = 0; i < altinlar.size(); i++) {
+                    if (altinlar.get(i).konum[0] == oyuncuB.hedefAltinKonum[0] && altinlar.get(i).konum[1] == oyuncuB.hedefAltinKonum[1]) {
+                        silinecekAltinIndex = i;
+                    }
+                }
+                xuzaklik = oyuncuB.AktifKonumu[0] - oyuncuB.hedefAltinKonum[0];
+                yuzaklik = oyuncuB.AktifKonumu[1] - oyuncuB.hedefAltinKonum[1];
+                hedefMaliyeti = 0;
+            }
+            int adim = 0;
+            JButtonKare[oyuncuB.hedefAltinKonum[0]][oyuncuB.hedefAltinKonum[1]].setText("<html>" + kareler[oyuncuB.hedefAltinKonum[0]][oyuncuB.hedefAltinKonum[1]].altinMiktari + "<br>" + "X" + "</html>");
+
+            adim = hareketEttir(xuzaklik, yuzaklik, adim, oyuncuB, "B", Color.ORANGE);
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+
+                        Thread.sleep(3500);
+                        COyna();
+
+                    } catch (InterruptedException e) {
+                    }
+
+                }
+            }.start();
+            oyuncuB.harcananAltinMiktari += Integer.parseInt(BHamleMaaliyet1.getText()) + hedefMaliyeti;
+            oyuncuB.mevcutAltinMiktari = oyuncuB.mevcutAltinMiktari - oyuncuB.harcananAltinMiktari;
+            oyuncuB.kasadakiAltinMiktari += oyuncuB.harcananAltinMiktari;
+            if (oyuncuB.AktifKonumu[0] == oyuncuB.hedefAltinKonum[0] && oyuncuB.AktifKonumu[1] == oyuncuB.hedefAltinKonum[1]) {
+                oyuncuB.mevcutAltinMiktari += kareler[oyuncuB.hedefAltinKonum[0]][oyuncuB.hedefAltinKonum[1]].altinMiktari;
+                oyuncuB.toplananAltinMiktari += kareler[oyuncuB.hedefAltinKonum[0]][oyuncuB.hedefAltinKonum[1]].altinMiktari;
+
+            }
+            if (Math.abs(yuzaklik) + Math.abs(xuzaklik) <= 3) {//eğer altın a kullanıcısının adımları içerisinde ise altını alacağı için listeden silmemiz gerekir
+                altinlar.remove(silinecekAltinIndex);
+                kareler[oyuncuB.hedefAltinKonum[0]][oyuncuB.hedefAltinKonum[1]].altinMiktari = 0;
+                kareler[oyuncuB.hedefAltinKonum[0]][oyuncuB.hedefAltinKonum[1]].gizli = false;
+                oyuncuB.hedefAltinKonum[0] = -1;    //oyuncu hedefini tmamladığı için artık bir hedefi yok
+                oyuncuB.hedefAltinKonum[1] = -1;    //oyuncu hedefini tmamladığı için artık bir hedefi yok
+            }
+
         }
-        System.out.println(xuzaklik + " D için" + yuzaklik);
-        int adim = 0;
-        System.out.println(oyuncuD.hedefAltinKonum[0] + " x hedeflenen" + oyuncuD.hedefAltinKonum[1] + "y hedeflenen");
-        JButtonKare[oyuncuD.hedefAltinKonum[0]][oyuncuD.hedefAltinKonum[1]].setText("<html>" + kareler[oyuncuD.hedefAltinKonum[0]][oyuncuD.hedefAltinKonum[1]].altinMiktari + "<br>" + "X" + "</html>");
+    }
 
-        adim = hareketEttir(xuzaklik, yuzaklik, adim, oyuncuD, "D", Color.GREEN);
-        System.out.println("adim gibi adim: " + adim);
+    public void COyna() {
+        parayaz();
+        if (oyuncuC.mevcutAltinMiktari <= 0) {
+            DOyna();
+            JButtonKare[oyuncuC.AktifKonumu[0]][oyuncuC.AktifKonumu[1]].setBackground(new java.awt.Color(240, 240, 240));
+            JButtonKare[oyuncuC.AktifKonumu[0]][oyuncuC.AktifKonumu[1]].setText("");
+        } else {
+            int enkMaliyet = Integer.MIN_VALUE;
+            int xuzaklik = 0, yuzaklik = 0;
+            int silinecekAltinIndex = 0;
+            int hedefMaliyet = 0;
+            int hedefAltinx = 0, hedefAltiny = 0;
+            if (oyuncuC.hedefAltinKonum[0] != -1) {
+                if (kareler[oyuncuC.hedefAltinKonum[0]][oyuncuC.hedefAltinKonum[1]].altinMiktari == 0) {
+                    oyuncuC.hedefAltinKonum[0] = -1;
+                    oyuncuC.hedefAltinKonum[1] = -1;
+                }
+            }
+            if (oyuncuC.hedefAltinKonum[0] == -1 && oyuncuC.hedefAltinKonum[1] == -1) {//oyuncu hedefi yoksa
+                for (int i = 0; i < altinlar.size(); i++) {
+                    int tempxuzaklik, tempyuzaklik;
+                    tempxuzaklik = oyuncuC.AktifKonumu[0] - altinlar.get(i).konum[0];
+                    tempyuzaklik = oyuncuC.AktifKonumu[1] - altinlar.get(i).konum[1];
+                    if (altinlar.get(i).gizli == true) {
+                        JButtonKare[altinlar.get(i).konum[0]][altinlar.get(i).konum[1]].setBackground(Color.yellow);
+                        altinlar.get(i).gizli = false;
+                    }
+                    int kar = (altinlar.get(i).altinMiktari - (((Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik)) * Integer.parseInt(CHamleMaaliyet1.getText())) + Integer.parseInt(CHedefMaaliyet.getText())));
+                    if (kar > enkMaliyet && altinlar.get(i).gizli == false) {
+                        enkMaliyet = kar;
+                        hedefAltinx = altinlar.get(i).konum[0];
+                        hedefAltiny = altinlar.get(i).konum[1];
+                        xuzaklik = tempxuzaklik;
+                        yuzaklik = tempyuzaklik;
+                        silinecekAltinIndex = i;
+                    }
+                }
+                if (hedefAltinx == 0 && hedefAltiny == 0) {//eğer oyuncu herhangi bir altını hedefleyemiyorsa
+                    return;
+                }
+                oyuncuC.hedefAltinKonum[0] = hedefAltinx;
+                oyuncuC.hedefAltinKonum[1] = hedefAltiny;
+                hedefMaliyet = Integer.parseInt(CHedefMaaliyet.getText());
+            } else {
+                for (int i = 0; i < altinlar.size(); i++) {
+                    if (altinlar.get(i).konum[0] == oyuncuC.hedefAltinKonum[0] && altinlar.get(i).konum[1] == oyuncuC.hedefAltinKonum[1]) {
+                        silinecekAltinIndex = i;
+                    }
+                }
+                xuzaklik = oyuncuC.AktifKonumu[0] - oyuncuC.hedefAltinKonum[0];
+                yuzaklik = oyuncuC.AktifKonumu[1] - oyuncuC.hedefAltinKonum[1];
+                hedefMaliyet = 0;
+            }
+            int adim = 0;
+            JButtonKare[oyuncuC.hedefAltinKonum[0]][oyuncuC.hedefAltinKonum[1]].setText("<html>" + kareler[oyuncuC.hedefAltinKonum[0]][oyuncuC.hedefAltinKonum[1]].altinMiktari + "<br>" + "X" + "</html>");
 
-        //System.out.println(oyuncuD.AktifKonumu[0]+"m "+oyuncuD.AktifKonumu[1]+"u "+oyuncuD.hedefAltinKonum[0]+" b"+oyuncuD.hedefAltinKonum[1]);
-        oyuncuD.harcananAltinMiktari += Integer.parseInt(BHamleMaaliyet1.getText()) * adim + hedefMaliyeti;
-        oyuncuD.mevcutAltinMiktari = oyuncuD.mevcutAltinMiktari - oyuncuD.harcananAltinMiktari;
-        oyuncuD.kasadakiAltinMiktari += oyuncuD.harcananAltinMiktari;
-        if (oyuncuD.AktifKonumu[0] == oyuncuD.hedefAltinKonum[0] && oyuncuD.AktifKonumu[1] == oyuncuD.hedefAltinKonum[1]) {
-            oyuncuD.mevcutAltinMiktari += kareler[oyuncuD.hedefAltinKonum[0]][oyuncuD.hedefAltinKonum[1]].altinMiktari;
-            oyuncuD.toplananAltinMiktari += kareler[oyuncuD.hedefAltinKonum[0]][oyuncuD.hedefAltinKonum[1]].altinMiktari;
+            adim = hareketEttir(xuzaklik, yuzaklik, adim, oyuncuC, "C", Color.BLUE);
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+
+                        Thread.sleep(3500);
+                        DOyna();
+
+                    } catch (InterruptedException e) {
+                    }
+
+                }
+            }.start();
+            oyuncuC.harcananAltinMiktari += Integer.parseInt(CHamleMaaliyet1.getText()) + hedefMaliyet;
+            oyuncuC.mevcutAltinMiktari = oyuncuC.mevcutAltinMiktari - oyuncuC.harcananAltinMiktari;
+            oyuncuC.kasadakiAltinMiktari += oyuncuC.harcananAltinMiktari;
+            if (oyuncuC.AktifKonumu[0] == oyuncuC.hedefAltinKonum[0] && oyuncuC.AktifKonumu[1] == oyuncuC.hedefAltinKonum[1]) {
+                oyuncuC.mevcutAltinMiktari += kareler[oyuncuC.hedefAltinKonum[0]][oyuncuC.hedefAltinKonum[1]].altinMiktari;
+                oyuncuC.toplananAltinMiktari += kareler[oyuncuC.hedefAltinKonum[0]][oyuncuC.hedefAltinKonum[1]].altinMiktari;
+
+            }
+            if (Math.abs(yuzaklik) + Math.abs(xuzaklik) <= 3) {//eğer altın a kullanıcısının adımları içerisinde ise altını alacağı için listeden silmemiz gerekir
+                altinlar.remove(silinecekAltinIndex);
+                kareler[oyuncuC.hedefAltinKonum[0]][oyuncuC.hedefAltinKonum[1]].altinMiktari = 0;
+                kareler[oyuncuC.hedefAltinKonum[0]][oyuncuC.hedefAltinKonum[1]].gizli = false;
+                oyuncuC.hedefAltinKonum[0] = -1;    //oyuncu hedefini tmamladığı için artık bir hedefi yok
+                oyuncuC.hedefAltinKonum[1] = -1;    //oyuncu hedefini tmamladığı için artık bir hedefi yok
+            }
+        }
+    }
+
+    public void DOyna() {
+        parayaz();
+        if (oyuncuD.mevcutAltinMiktari <= 0) {
+            AOyna();
+            JButtonKare[oyuncuD.AktifKonumu[0]][oyuncuD.AktifKonumu[1]].setBackground(new java.awt.Color(240, 240, 240));
+            JButtonKare[oyuncuD.AktifKonumu[0]][oyuncuD.AktifKonumu[1]].setText("");
+        } else {
+            ArrayList<Kare> dAltinlar = (ArrayList<Kare>) altinlar.clone();
+            if (oyuncuA.hedefAltinKonum[0] == -1) { //anın hedefi yoksa
+                int enkAdim = Integer.MAX_VALUE;
+                int xuzaklik = 0, yuzaklik = 0;
+                int silinecekAltinIndex = 0;
+                int hedefMaliyeti = 0;
+                int hedefAltinx = 0, hedefAltiny = 0;
+                for (int i = 0; i < altinlar.size(); i++) {
+                    int tempxuzaklik, tempyuzaklik;
+                    tempxuzaklik = oyuncuA.AktifKonumu[0] - altinlar.get(i).konum[0];
+                    tempyuzaklik = oyuncuA.AktifKonumu[1] - altinlar.get(i).konum[1];
+
+                    if (Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik) < enkAdim && altinlar.get(i).gizli == false) {
+                        enkAdim = Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik);
+                        hedefAltinx = altinlar.get(i).konum[0];
+                        hedefAltiny = altinlar.get(i).konum[1];
+                        xuzaklik = tempxuzaklik;
+                        yuzaklik = tempyuzaklik;
+                        silinecekAltinIndex = i;
+                    }
+                }
+                int aUzaklik = Math.abs(oyuncuA.AktifKonumu[0] - hedefAltinx) + Math.abs(oyuncuA.AktifKonumu[1] - hedefAltiny);
+                int dUzaklik = Math.abs(oyuncuD.AktifKonumu[0] - hedefAltinx) + Math.abs(oyuncuD.AktifKonumu[1] - hedefAltiny);
+                if (dUzaklik > aUzaklik && dUzaklik > 3) {
+                    dAltinlar.remove(altinlar.get(silinecekAltinIndex));
+                }
+            } else {// a nın hedefi varsa
+                int aUzaklik = Math.abs(oyuncuA.AktifKonumu[0] - oyuncuA.hedefAltinKonum[0]) + Math.abs(oyuncuA.AktifKonumu[1] - oyuncuA.hedefAltinKonum[1]);
+                int dUzaklik = Math.abs(oyuncuD.AktifKonumu[0] - oyuncuA.hedefAltinKonum[0]) + Math.abs(oyuncuD.AktifKonumu[1] - oyuncuA.hedefAltinKonum[1]);
+                if (dUzaklik > aUzaklik && dUzaklik > 3) {
+                    for (int k = 0; k < altinlar.size(); k++) { // a nın hedefi varsa yine uzaklıkları karşılaştır a daha önce ulaşıyorsa karşılaştırıp dAltinlar dan sil
+                        if (Arrays.equals(altinlar.get(k).konum, oyuncuA.hedefAltinKonum)) {
+                            dAltinlar.remove(altinlar.get(k));
+                        }
+                    }
+                }
+            }
+
+            if (oyuncuB.hedefAltinKonum[0] == -1) {
+                int enkMaliyet = Integer.MIN_VALUE;
+                int xuzaklik = 0, yuzaklik = 0;
+                int silinecekAltinIndex = 0;
+                int hedefMaliyeti = 0;
+                int hedefAltinx = 0, hedefAltiny = 0;
+                for (int i = 0; i < altinlar.size(); i++) {
+                    int tempxuzaklik, tempyuzaklik;
+                    tempxuzaklik = oyuncuB.AktifKonumu[0] - altinlar.get(i).konum[0];
+                    tempyuzaklik = oyuncuB.AktifKonumu[1] - altinlar.get(i).konum[1];
+
+                    int kar = (altinlar.get(i).altinMiktari - (((Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik)) * Integer.parseInt(BHamleMaaliyet1.getText())) + Integer.parseInt(BHedefMaaliyet.getText())));
+                    if (kar > enkMaliyet && altinlar.get(i).gizli == false) {
+                        enkMaliyet = kar;
+                        hedefAltinx = altinlar.get(i).konum[0];
+                        hedefAltiny = altinlar.get(i).konum[1];
+                        xuzaklik = tempxuzaklik;
+                        yuzaklik = tempyuzaklik;
+                        silinecekAltinIndex = i;
+
+                    }
+                }
+                int bUzaklik = Math.abs(oyuncuB.AktifKonumu[0] - hedefAltinx) + Math.abs(oyuncuB.AktifKonumu[1] - hedefAltiny);
+                int dUzaklik = Math.abs(oyuncuD.AktifKonumu[0] - hedefAltinx) + Math.abs(oyuncuD.AktifKonumu[1] - hedefAltiny);
+                if (dUzaklik > bUzaklik && dUzaklik > 3) {
+                    dAltinlar.remove(altinlar.get(silinecekAltinIndex));
+                }
+            } else {// B nın hedefi varsa
+                int bUzaklik = Math.abs(oyuncuB.AktifKonumu[0] - oyuncuB.hedefAltinKonum[0]) + Math.abs(oyuncuB.AktifKonumu[1] - oyuncuB.hedefAltinKonum[1]);
+                int dUzaklik = Math.abs(oyuncuD.AktifKonumu[0] - oyuncuB.hedefAltinKonum[0]) + Math.abs(oyuncuD.AktifKonumu[1] - oyuncuB.hedefAltinKonum[1]);
+                if (dUzaklik > bUzaklik && dUzaklik > 3) {
+                    for (int k = 0; k < altinlar.size(); k++) { // b nın hedefi varsa yine uzaklıkları karşılaştır b daha önce ulaşıyorsa karşılaştırıp dAltinlar dan sil
+                        if (Arrays.equals(altinlar.get(k).konum, oyuncuB.hedefAltinKonum)) {
+                            dAltinlar.remove(altinlar.get(k));
+                        }
+                    }
+                }
+            }
+
+            if (oyuncuC.hedefAltinKonum[0] == -1) {
+                int enkMaliyet = Integer.MIN_VALUE;
+                int xuzaklik = 0, yuzaklik = 0;
+                int silinecekAltinIndex = 0;
+                int hedefMaliyeti = 0;
+                int hedefAltinx = 0, hedefAltiny = 0;
+                for (int i = 0; i < altinlar.size(); i++) {
+                    int tempxuzaklik, tempyuzaklik;
+                    tempxuzaklik = oyuncuC.AktifKonumu[0] - altinlar.get(i).konum[0];
+                    tempyuzaklik = oyuncuC.AktifKonumu[1] - altinlar.get(i).konum[1];
+                    if (altinlar.get(i).gizli == true) {
+                        JButtonKare[altinlar.get(i).konum[0]][altinlar.get(i).konum[1]].setBackground(Color.yellow);
+                        altinlar.get(i).gizli = false;
+                    }
+                    int kar = (altinlar.get(i).altinMiktari - (((Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik)) * Integer.parseInt(CHamleMaaliyet1.getText())) + Integer.parseInt(CHedefMaaliyet.getText())));
+                    if (kar > enkMaliyet && altinlar.get(i).gizli == false) {
+                        enkMaliyet = kar;
+                        hedefAltinx = altinlar.get(i).konum[0];
+                        hedefAltiny = altinlar.get(i).konum[1];
+                        xuzaklik = tempxuzaklik;
+                        yuzaklik = tempyuzaklik;
+                        silinecekAltinIndex = i;
+                    }
+                }
+                int cUzaklik = Math.abs(oyuncuC.AktifKonumu[0] - hedefAltinx) + Math.abs(oyuncuC.AktifKonumu[1] - hedefAltiny);
+                int dUzaklik = Math.abs(oyuncuD.AktifKonumu[0] - hedefAltinx) + Math.abs(oyuncuD.AktifKonumu[1] - hedefAltiny);
+                if (dUzaklik > cUzaklik && dUzaklik > 3) {
+                    dAltinlar.remove(altinlar.get(silinecekAltinIndex));
+                }
+            } else {// C nın hedefi varsa
+                int cUzaklik = Math.abs(oyuncuC.AktifKonumu[0] - oyuncuC.hedefAltinKonum[0]) + Math.abs(oyuncuC.AktifKonumu[1] - oyuncuC.hedefAltinKonum[1]);
+                int dUzaklik = Math.abs(oyuncuD.AktifKonumu[0] - oyuncuC.hedefAltinKonum[0]) + Math.abs(oyuncuD.AktifKonumu[1] - oyuncuC.hedefAltinKonum[1]);
+                if (dUzaklik > cUzaklik && dUzaklik > 3) {
+                    for (int k = 0; k < altinlar.size(); k++) { // c nın hedefi varsa yine uzaklıkları karşılaştır c daha önce ulaşıyorsa karşılaştırıp dAltinlar dan sil
+                        if (Arrays.equals(altinlar.get(k).konum, oyuncuC.hedefAltinKonum)) {
+                            dAltinlar.remove(altinlar.get(k));
+                        }
+                    }
+                }
+            }
+
+            int enkMaliyet = Integer.MIN_VALUE;
+            int xuzaklik = 0, yuzaklik = 0;
+            int silinecekAltinIndex = 0;
+            int hedefMaliyeti = 0;
+            int hedefAltinx = 0, hedefAltiny = 0;
+            if (oyuncuD.hedefAltinKonum[0] != -1) {
+                if (kareler[oyuncuD.hedefAltinKonum[0]][oyuncuD.hedefAltinKonum[1]].altinMiktari == 0) {
+                    oyuncuD.hedefAltinKonum[0] = -1;
+                    oyuncuD.hedefAltinKonum[1] = -1;
+                }
+            }
+            if (oyuncuD.hedefAltinKonum[0] == -1 && oyuncuD.hedefAltinKonum[1] == -1) {//oyuncu hedefi yoksa
+                for (int i = 0; i < dAltinlar.size(); i++) {
+                    int tempxuzaklik, tempyuzaklik;
+                    tempxuzaklik = oyuncuD.AktifKonumu[0] - dAltinlar.get(i).konum[0];
+                    tempyuzaklik = oyuncuD.AktifKonumu[1] - dAltinlar.get(i).konum[1];
+
+                    int kar = (dAltinlar.get(i).altinMiktari - (((Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik)) * Integer.parseInt(BHamleMaaliyet1.getText())) + Integer.parseInt(BHedefMaaliyet.getText())));
+                    if (kar > enkMaliyet && dAltinlar.get(i).gizli == false) {
+                        enkMaliyet = kar;
+                        hedefAltinx = dAltinlar.get(i).konum[0];
+                        hedefAltiny = dAltinlar.get(i).konum[1];
+                        xuzaklik = tempxuzaklik;
+                        yuzaklik = tempyuzaklik;
+                        silinecekAltinIndex = i;
+
+                    }
+                }
+                if (hedefAltinx == 0 && hedefAltiny == 0) {//eğer oyuncu herhangi bir altını hedefleyemiyorsa
+                    return;
+                }
+                oyuncuD.hedefAltinKonum[0] = hedefAltinx;
+                oyuncuD.hedefAltinKonum[1] = hedefAltiny;
+                hedefMaliyeti = Integer.parseInt(BHedefMaaliyet.getText());
+            } else {
+                for (int i = 0; i < dAltinlar.size(); i++) {
+                    if (dAltinlar.get(i).konum[0] == oyuncuD.hedefAltinKonum[0] && dAltinlar.get(i).konum[1] == oyuncuD.hedefAltinKonum[1]) {
+                        silinecekAltinIndex = i;
+                    }
+                }
+                xuzaklik = oyuncuD.AktifKonumu[0] - oyuncuD.hedefAltinKonum[0];
+                yuzaklik = oyuncuD.AktifKonumu[1] - oyuncuD.hedefAltinKonum[1];
+                hedefMaliyeti = 0;
+            }
+            int adim = 0;
+            JButtonKare[oyuncuD.hedefAltinKonum[0]][oyuncuD.hedefAltinKonum[1]].setText("<html>" + kareler[oyuncuD.hedefAltinKonum[0]][oyuncuD.hedefAltinKonum[1]].altinMiktari + "<br>" + "X" + "</html>");
+
+            adim = hareketEttir(xuzaklik, yuzaklik, adim, oyuncuD, "D", Color.GREEN);
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+
+                        Thread.sleep(3500);
+                        AOyna();
+
+                    } catch (InterruptedException e) {
+                    }
+
+                }
+            }.start();
+            oyuncuD.harcananAltinMiktari += Integer.parseInt(BHamleMaaliyet1.getText()) + hedefMaliyeti;
+            oyuncuD.mevcutAltinMiktari = oyuncuD.mevcutAltinMiktari - oyuncuD.harcananAltinMiktari;
+            oyuncuD.kasadakiAltinMiktari += oyuncuD.harcananAltinMiktari;
+            if (oyuncuD.AktifKonumu[0] == oyuncuD.hedefAltinKonum[0] && oyuncuD.AktifKonumu[1] == oyuncuD.hedefAltinKonum[1]) {
+                oyuncuD.mevcutAltinMiktari += kareler[oyuncuD.hedefAltinKonum[0]][oyuncuD.hedefAltinKonum[1]].altinMiktari;
+                oyuncuD.toplananAltinMiktari += kareler[oyuncuD.hedefAltinKonum[0]][oyuncuD.hedefAltinKonum[1]].altinMiktari;
+
+            }
+            if (Math.abs(yuzaklik) + Math.abs(xuzaklik) <= 3) {//eğer altın a kullanıcısının adımları içerisinde ise altını alacağı için listeden silmemiz gerekir
+                altinlar.remove(dAltinlar.get(silinecekAltinIndex));
+                kareler[oyuncuD.hedefAltinKonum[0]][oyuncuD.hedefAltinKonum[1]].altinMiktari = 0;
+                kareler[oyuncuD.hedefAltinKonum[0]][oyuncuD.hedefAltinKonum[1]].gizli = false;
+                oyuncuD.hedefAltinKonum[0] = -1;    //oyuncu hedefini tmamladığı için artık bir hedefi yok
+                oyuncuD.hedefAltinKonum[1] = -1;    //oyuncu hedefini tmamladığı için artık bir hedefi yok
+            }
 
         }
-        if (Math.abs(yuzaklik) + Math.abs(xuzaklik) <= 3) {//eğer altın a kullanıcısının adımları içerisinde ise altını alacağı için listeden silmemiz gerekir
-            altinlar.remove(dAltinlar.get(silinecekAltinIndex));
-            kareler[oyuncuD.hedefAltinKonum[0]][oyuncuD.hedefAltinKonum[1]].altinMiktari = 0;
-            kareler[oyuncuD.hedefAltinKonum[0]][oyuncuD.hedefAltinKonum[1]].gizli = false;
-            oyuncuD.hedefAltinKonum[0] = -1;    //oyuncu hedefini tmamladığı için artık bir hedefi yok
-            oyuncuD.hedefAltinKonum[1] = -1;    //oyuncu hedefini tmamladığı için artık bir hedefi yok
-        }
-
-        System.out.println(
-                Integer.parseInt(CHamleMaaliyet1.getText()) * adim + hedefMaliyeti + "harcanan:" + oyuncuD.harcananAltinMiktari + " kasadakiAltın" + oyuncuD.kasadakiAltinMiktari + " Mevcut altın" + oyuncuD.mevcutAltinMiktari + "toplanan altın" + oyuncuD.toplananAltinMiktari);
-
     }
 
     public int hareketEttir(int xuzaklik, int yuzaklik, int adim, Oyuncu oyuncu, String oyuncuIsmi, Color renk) {
@@ -601,12 +662,12 @@ public class Arayüz extends javax.swing.JFrame {
                 if (adim < 3) {
 
                     adim++;
-                    int sleep = adim * 750;
+                    int sleep = adim * hareketBeklemeSuresi;
 
                     int tmpKonumx = oyuncu.AktifKonumu[0];
                     int tmpKonumy = oyuncu.AktifKonumu[1];
-                    oyuncu.AktifKonumu[0] = oyuncu.AktifKonumu[0] + 1; // A için x in konumunu arttırdık veya azalttık.
-                    System.out.println("x=" + oyuncu.AktifKonumu[0] + " y=" + oyuncu.AktifKonumu[1]);
+                    oyuncu.AktifKonumu[0] = oyuncu.AktifKonumu[0] + 1;
+
                     new Thread() {
                         @Override
                         public void run() {
@@ -644,8 +705,8 @@ public class Arayüz extends javax.swing.JFrame {
                                     }
                                 }
 
-                                tmpKonumx1 = tmpKonumx1 + 1; // A için x in konumunu arttırdık veya azalttık.
-                                //System.out.println(oyuncu.AktifKonumu[0]+"cc");
+                                tmpKonumx1 = tmpKonumx1 + 1;
+
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setText(oyuncuIsmi);
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
@@ -661,13 +722,12 @@ public class Arayüz extends javax.swing.JFrame {
             for (int i = oyuncu.AktifKonumu[1]; i < oyuncu.hedefAltinKonum[1]; i++) {
                 if (adim < 3) {
                     adim++;
-                    int sleep = adim * 750;
+                    int sleep = adim * hareketBeklemeSuresi;
 
                     int tmpKonumx = oyuncu.AktifKonumu[0];
                     int tmpKonumy = oyuncu.AktifKonumu[1];
                     oyuncu.AktifKonumu[1] = oyuncu.AktifKonumu[1] + 1;
 
-                    System.out.println("x=" + oyuncu.AktifKonumu[0] + " y=" + oyuncu.AktifKonumu[1]);
                     new Thread() {
                         @Override
                         public void run() {
@@ -704,7 +764,7 @@ public class Arayüz extends javax.swing.JFrame {
                                     }
                                 }
 
-                                tmpKonumy2 = tmpKonumy2 + 1; // A için x in konumunu arttırdık veya azalttık.
+                                tmpKonumy2 = tmpKonumy2 + 1;
 
                                 JButtonKare[tmpKonumx2][tmpKonumy2].setBackground(renk);
                                 JButtonKare[tmpKonumx2][tmpKonumy2].setText(oyuncuIsmi);
@@ -724,12 +784,12 @@ public class Arayüz extends javax.swing.JFrame {
                 if (adim < 3) {
 
                     adim++;
-                    int sleep = adim * 750;
+                    int sleep = adim * hareketBeklemeSuresi;
 
                     int tmpKonumx = oyuncu.AktifKonumu[0];
                     int tmpKonumy = oyuncu.AktifKonumu[1];
-                    oyuncu.AktifKonumu[0] = oyuncu.AktifKonumu[0] + 1; // A için x in konumunu arttırdık veya azalttık.
-                    System.out.println("x=" + oyuncu.AktifKonumu[0] + " y=" + oyuncu.AktifKonumu[1]);
+                    oyuncu.AktifKonumu[0] = oyuncu.AktifKonumu[0] + 1;
+
                     new Thread() {
                         @Override
                         public void run() {
@@ -767,8 +827,8 @@ public class Arayüz extends javax.swing.JFrame {
                                     }
                                 }
 
-                                tmpKonumx1 = tmpKonumx1 + 1; // A için x in konumunu arttırdık veya azalttık.
-                                //System.out.println(oyuncu.AktifKonumu[0]+"cc");
+                                tmpKonumx1 = tmpKonumx1 + 1;
+
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setText(oyuncuIsmi);
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
@@ -784,18 +844,16 @@ public class Arayüz extends javax.swing.JFrame {
 
         }
         if (xuzaklik > 0 && yuzaklik < 0) {
-
-            System.out.println("kalbim sende");
             for (int i = oyuncu.AktifKonumu[0]; i > oyuncu.hedefAltinKonum[0]; i--) {
                 if (adim < 3) {
 
                     adim++;
-                    int sleep = adim * 750;
+                    int sleep = adim * hareketBeklemeSuresi;
 
                     int tmpKonumx = oyuncu.AktifKonumu[0];
                     int tmpKonumy = oyuncu.AktifKonumu[1];
-                    oyuncu.AktifKonumu[0] = oyuncu.AktifKonumu[0] - 1; // A için x in konumunu arttırdık veya azalttık.
-                    System.out.println("x=" + oyuncu.AktifKonumu[0] + " y=" + oyuncu.AktifKonumu[1]);
+                    oyuncu.AktifKonumu[0] = oyuncu.AktifKonumu[0] - 1;
+
                     new Thread() {
                         @Override
                         public void run() {
@@ -832,8 +890,7 @@ public class Arayüz extends javax.swing.JFrame {
                                         }
                                     }
                                 }
-                                tmpKonumx1 = tmpKonumx1 - 1; // A için x in konumunu arttırdık veya azalttık.
-                                //System.out.println(oyuncu.AktifKonumu[0]+"cc");
+                                tmpKonumx1 = tmpKonumx1 - 1;
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setText(oyuncuIsmi);
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
@@ -849,13 +906,12 @@ public class Arayüz extends javax.swing.JFrame {
             for (int i = oyuncu.AktifKonumu[1]; i < oyuncu.hedefAltinKonum[1]; i++) {
                 if (adim < 3) {
                     adim++;
-                    int sleep = adim * 750;
+                    int sleep = adim * hareketBeklemeSuresi;
 
                     int tmpKonumx = oyuncu.AktifKonumu[0];
                     int tmpKonumy = oyuncu.AktifKonumu[1];
                     oyuncu.AktifKonumu[1] = oyuncu.AktifKonumu[1] + 1;
 
-                    System.out.println("x=" + oyuncu.AktifKonumu[0] + " y=" + oyuncu.AktifKonumu[1]);
                     new Thread() {
                         @Override
                         public void run() {
@@ -912,12 +968,12 @@ public class Arayüz extends javax.swing.JFrame {
                 if (adim < 3) {
 
                     adim++;
-                    int sleep = adim * 750;
+                    int sleep = adim * hareketBeklemeSuresi;
 
                     int tmpKonumx = oyuncu.AktifKonumu[0];
                     int tmpKonumy = oyuncu.AktifKonumu[1];
-                    oyuncu.AktifKonumu[0] = oyuncu.AktifKonumu[0] - 1; // A için x in konumunu arttırdık veya azalttık.
-                    System.out.println("x=" + oyuncu.AktifKonumu[0] + " y=" + oyuncu.AktifKonumu[1]);
+                    oyuncu.AktifKonumu[0] = oyuncu.AktifKonumu[0] - 1;
+
                     new Thread() {
                         @Override
                         public void run() {
@@ -954,8 +1010,8 @@ public class Arayüz extends javax.swing.JFrame {
                                         }
                                     }
                                 }
-                                tmpKonumx1 = tmpKonumx1 - 1; // A için x in konumunu arttırdık veya azalttık.
-                                //System.out.println(oyuncu.AktifKonumu[0]+"cc");
+                                tmpKonumx1 = tmpKonumx1 - 1;
+
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setText(oyuncuIsmi);
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
@@ -976,12 +1032,11 @@ public class Arayüz extends javax.swing.JFrame {
                 if (adim < 3) {
 
                     adim++;
-                    int sleep = adim * 750;
+                    int sleep = adim * hareketBeklemeSuresi;
 
                     int tmpKonumx = oyuncu.AktifKonumu[0];
                     int tmpKonumy = oyuncu.AktifKonumu[1];
-                    oyuncu.AktifKonumu[0] = oyuncu.AktifKonumu[0] + 1; // A için x in konumunu arttırdık veya azalttık.
-                    System.out.println("x=" + oyuncu.AktifKonumu[0] + " y=" + oyuncu.AktifKonumu[1]);
+                    oyuncu.AktifKonumu[0] = oyuncu.AktifKonumu[0] + 1;
                     new Thread() {
                         @Override
                         public void run() {
@@ -1018,8 +1073,7 @@ public class Arayüz extends javax.swing.JFrame {
                                         }
                                     }
                                 }
-                                tmpKonumx1 = tmpKonumx1 + 1; // A için x in konumunu arttırdık veya azalttık.
-                                //System.out.println(oyuncu.AktifKonumu[0]+"cc");
+                                tmpKonumx1 = tmpKonumx1 + 1;
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setText(oyuncuIsmi);
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
@@ -1036,13 +1090,12 @@ public class Arayüz extends javax.swing.JFrame {
             for (int i = oyuncu.AktifKonumu[1]; i > oyuncu.hedefAltinKonum[1]; i--) {
                 if (adim < 3) {
                     adim++;
-                    int sleep = adim * 750;
+                    int sleep = adim * hareketBeklemeSuresi;
 
                     int tmpKonumx = oyuncu.AktifKonumu[0];
                     int tmpKonumy = oyuncu.AktifKonumu[1];
                     oyuncu.AktifKonumu[1] = oyuncu.AktifKonumu[1] - 1;
 
-                    System.out.println("x=" + oyuncu.AktifKonumu[0] + " y=" + oyuncu.AktifKonumu[1]);
                     new Thread() {
                         @Override
                         public void run() {
@@ -1098,12 +1151,11 @@ public class Arayüz extends javax.swing.JFrame {
                 if (adim < 3) {
 
                     adim++;
-                    int sleep = adim * 750;
+                    int sleep = adim * hareketBeklemeSuresi;
 
                     int tmpKonumx = oyuncu.AktifKonumu[0];
                     int tmpKonumy = oyuncu.AktifKonumu[1];
-                    oyuncu.AktifKonumu[0] = oyuncu.AktifKonumu[0] - 1; // A için x in konumunu arttırdık veya azalttık.
-                    System.out.println("x=" + oyuncu.AktifKonumu[0] + " y=" + oyuncu.AktifKonumu[1]);
+                    oyuncu.AktifKonumu[0] = oyuncu.AktifKonumu[0] - 1;
                     new Thread() {
                         @Override
                         public void run() {
@@ -1140,8 +1192,7 @@ public class Arayüz extends javax.swing.JFrame {
                                         }
                                     }
                                 }
-                                tmpKonumx1 = tmpKonumx1 - 1; // A için x in konumunu arttırdık veya azalttık.
-                                //System.out.println(oyuncu.AktifKonumu[0]+"cc");
+                                tmpKonumx1 = tmpKonumx1 - 1;
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setText(oyuncuIsmi);
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
@@ -1157,13 +1208,11 @@ public class Arayüz extends javax.swing.JFrame {
             for (int i = oyuncu.AktifKonumu[1]; i > oyuncu.hedefAltinKonum[1]; i--) {
                 if (adim < 3) {
                     adim++;
-                    int sleep = adim * 750;
+                    int sleep = adim * hareketBeklemeSuresi;
 
                     int tmpKonumx = oyuncu.AktifKonumu[0];
                     int tmpKonumy = oyuncu.AktifKonumu[1];
                     oyuncu.AktifKonumu[1] = oyuncu.AktifKonumu[1] - 1;
-
-                    System.out.println("x=" + oyuncu.AktifKonumu[0] + " y=" + oyuncu.AktifKonumu[1]);
                     new Thread() {
                         @Override
                         public void run() {
@@ -1217,13 +1266,11 @@ public class Arayüz extends javax.swing.JFrame {
             for (int i = oyuncu.AktifKonumu[1]; i > oyuncu.hedefAltinKonum[1]; i--) {
                 if (adim < 3) {
                     adim++;
-                    int sleep = adim * 750;
+                    int sleep = adim * hareketBeklemeSuresi;
 
                     int tmpKonumx = oyuncu.AktifKonumu[0];
                     int tmpKonumy = oyuncu.AktifKonumu[1];
                     oyuncu.AktifKonumu[1] = oyuncu.AktifKonumu[1] - 1;
-
-                    System.out.println("x=" + oyuncu.AktifKonumu[0] + " y=" + oyuncu.AktifKonumu[1]);
                     new Thread() {
                         @Override
                         public void run() {
@@ -1279,12 +1326,11 @@ public class Arayüz extends javax.swing.JFrame {
                 if (adim < 3) {
 
                     adim++;
-                    int sleep = adim * 750;
+                    int sleep = adim * hareketBeklemeSuresi;
 
                     int tmpKonumx = oyuncu.AktifKonumu[0];
                     int tmpKonumy = oyuncu.AktifKonumu[1];
-                    oyuncu.AktifKonumu[0] = oyuncu.AktifKonumu[0] + 1; // A için x in konumunu arttırdık veya azalttık.
-                    System.out.println("x=" + oyuncu.AktifKonumu[0] + " y=" + oyuncu.AktifKonumu[1]);
+                    oyuncu.AktifKonumu[0] = oyuncu.AktifKonumu[0] + 1;
                     new Thread() {
                         @Override
                         public void run() {
@@ -1321,8 +1367,7 @@ public class Arayüz extends javax.swing.JFrame {
                                         }
                                     }
                                 }
-                                tmpKonumx1 = tmpKonumx1 + 1; // A için x in konumunu arttırdık veya azalttık.
-                                //System.out.println(oyuncu.AktifKonumu[0]+"cc");
+                                tmpKonumx1 = tmpKonumx1 + 1;
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setText(oyuncuIsmi);
                                 JButtonKare[tmpKonumx1][tmpKonumy1].setBackground(renk);
@@ -1338,13 +1383,11 @@ public class Arayüz extends javax.swing.JFrame {
             for (int i = oyuncu.AktifKonumu[1]; i < oyuncu.hedefAltinKonum[1]; i++) {
                 if (adim < 3) {
                     adim++;
-                    int sleep = adim * 750;
+                    int sleep = adim * hareketBeklemeSuresi;
 
                     int tmpKonumx = oyuncu.AktifKonumu[0];
                     int tmpKonumy = oyuncu.AktifKonumu[1];
                     oyuncu.AktifKonumu[1] = oyuncu.AktifKonumu[1] + 1;
-
-                    System.out.println("x=" + oyuncu.AktifKonumu[0] + " y=" + oyuncu.AktifKonumu[1]);
                     new Thread() {
                         @Override
                         public void run() {
@@ -1400,13 +1443,12 @@ public class Arayüz extends javax.swing.JFrame {
             for (int i = oyuncu.AktifKonumu[1]; i < oyuncu.hedefAltinKonum[1]; i++) {
                 if (adim < 3) {
                     adim++;
-                    int sleep = adim * 750;
+                    int sleep = adim * hareketBeklemeSuresi;
 
                     int tmpKonumx = oyuncu.AktifKonumu[0];
                     int tmpKonumy = oyuncu.AktifKonumu[1];
                     oyuncu.AktifKonumu[1] = oyuncu.AktifKonumu[1] + 1;
 
-                    System.out.println("x=" + oyuncu.AktifKonumu[0] + " y=" + oyuncu.AktifKonumu[1]);
                     new Thread() {
                         @Override
                         public void run() {
@@ -1455,6 +1497,23 @@ public class Arayüz extends javax.swing.JFrame {
                     }.start();
                 }
             }
+        }
+
+        if (oyuncuA.mevcutAltinMiktari <= 0) {
+            JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setBackground(new java.awt.Color(240, 240, 240));
+            JButtonKare[oyuncuA.AktifKonumu[0]][oyuncuA.AktifKonumu[1]].setText("");
+        }
+        if (oyuncuB.mevcutAltinMiktari <= 0) {
+            JButtonKare[oyuncuB.AktifKonumu[0]][oyuncuB.AktifKonumu[1]].setBackground(new java.awt.Color(240, 240, 240));
+            JButtonKare[oyuncuB.AktifKonumu[0]][oyuncuB.AktifKonumu[1]].setText("");
+        }
+        if (oyuncuC.mevcutAltinMiktari <= 0) {
+            JButtonKare[oyuncuC.AktifKonumu[0]][oyuncuC.AktifKonumu[1]].setBackground(new java.awt.Color(240, 240, 240));
+            JButtonKare[oyuncuC.AktifKonumu[0]][oyuncuC.AktifKonumu[1]].setText("");
+        }
+        if (oyuncuD.mevcutAltinMiktari <= 0) {
+            JButtonKare[oyuncuD.AktifKonumu[0]][oyuncuD.AktifKonumu[1]].setBackground(new java.awt.Color(240, 240, 240));
+            JButtonKare[oyuncuD.AktifKonumu[0]][oyuncuD.AktifKonumu[1]].setText("");
         }
         return adim;
     }
@@ -1706,6 +1765,7 @@ public class Arayüz extends javax.swing.JFrame {
 
     private void baslaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_baslaActionPerformed
         oyunOlustur();
+        AOyna();
 
     }//GEN-LAST:event_baslaActionPerformed
 
