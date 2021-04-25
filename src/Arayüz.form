@@ -64,9 +64,6 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="800"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tahtaXActionPerformed"/>
-          </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
               <AbsoluteConstraints x="120" y="160" width="50" height="30"/>
@@ -77,9 +74,6 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="800"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tahtaYActionPerformed"/>
-          </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
               <AbsoluteConstraints x="200" y="160" width="50" height="30"/>
@@ -103,9 +97,6 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="20"/>
           </Properties>
-          <Events>
-            <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="kareKenarKeyTyped"/>
-          </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
               <AbsoluteConstraints x="120" y="200" width="50" height="30"/>
@@ -156,9 +147,6 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="10"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="gizliAltinOraniActionPerformed"/>
-          </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
               <AbsoluteConstraints x="120" y="320" width="50" height="30"/>
@@ -169,9 +157,6 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="3"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="adimSayisiActionPerformed"/>
-          </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
               <AbsoluteConstraints x="120" y="360" width="50" height="30"/>
@@ -218,7 +203,7 @@
             </Constraint>
           </Constraints>
         </Component>
-        <Component class="javax.swing.JTextField" name="AHedefMaaliyet1">
+        <Component class="javax.swing.JTextField" name="AHedefMaaliyet">
           <Properties>
             <Property name="text" type="java.lang.String" value="5"/>
           </Properties>
@@ -238,7 +223,7 @@
             </Constraint>
           </Constraints>
         </Component>
-        <Component class="javax.swing.JTextField" name="BHamleMaaliyet1">
+        <Component class="javax.swing.JTextField" name="BHamleMaaliyet">
           <Properties>
             <Property name="text" type="java.lang.String" value="5"/>
           </Properties>
@@ -248,7 +233,7 @@
             </Constraint>
           </Constraints>
         </Component>
-        <Component class="javax.swing.JTextField" name="CHamleMaaliyet1">
+        <Component class="javax.swing.JTextField" name="CHamleMaaliyet">
           <Properties>
             <Property name="text" type="java.lang.String" value="5"/>
           </Properties>
@@ -328,7 +313,7 @@
             </Constraint>
           </Constraints>
         </Component>
-        <Component class="javax.swing.JLabel" name="jLabel1">
+        <Component class="javax.swing.JLabel" name="dText">
           <Properties>
             <Property name="text" type="java.lang.String" value="D"/>
           </Properties>
@@ -338,7 +323,7 @@
             </Constraint>
           </Constraints>
         </Component>
-        <Component class="javax.swing.JLabel" name="jLabel2">
+        <Component class="javax.swing.JLabel" name="aText">
           <Properties>
             <Property name="text" type="java.lang.String" value="A"/>
           </Properties>
@@ -348,7 +333,7 @@
             </Constraint>
           </Constraints>
         </Component>
-        <Component class="javax.swing.JLabel" name="jLabel3">
+        <Component class="javax.swing.JLabel" name="bText">
           <Properties>
             <Property name="text" type="java.lang.String" value="B"/>
           </Properties>
@@ -358,7 +343,7 @@
             </Constraint>
           </Constraints>
         </Component>
-        <Component class="javax.swing.JLabel" name="jLabel4">
+        <Component class="javax.swing.JLabel" name="cText">
           <Properties>
             <Property name="text" type="java.lang.String" value="C"/>
           </Properties>
@@ -368,7 +353,7 @@
             </Constraint>
           </Constraints>
         </Component>
-        <Component class="javax.swing.JLabel" name="jLabel5">
+        <Component class="javax.swing.JLabel" name="baslik1">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Noto Serif CJK KR" size="18" style="0"/>
@@ -381,7 +366,7 @@
             </Constraint>
           </Constraints>
         </Component>
-        <Component class="javax.swing.JLabel" name="jLabel6">
+        <Component class="javax.swing.JLabel" name="baslik0">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Noto Serif CJK KR" size="18" style="0"/>

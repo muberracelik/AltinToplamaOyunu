@@ -1,9 +1,6 @@
-
 import java.awt.Toolkit;
 import javax.swing.JButton;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -11,21 +8,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
-import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.Timer;
 
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-/**
- *
- * @author Lenovo
- */
+
 public class Arayüz extends javax.swing.JFrame {
 
     public static Toolkit kit = Toolkit.getDefaultToolkit();
@@ -42,6 +29,7 @@ public class Arayüz extends javax.swing.JFrame {
     Oyuncu oyuncuB = new Oyuncu();
     Oyuncu oyuncuC = new Oyuncu();
     Oyuncu oyuncuD = new Oyuncu();
+    int beklemeSuresi = 0;
 
     public static BufferedWriter bufferedWriter = null;
 
@@ -250,7 +238,7 @@ public class Arayüz extends javax.swing.JFrame {
                 }
                 oyuncuA.hedefAltinKonum[0] = hedefAltinx;
                 oyuncuA.hedefAltinKonum[1] = hedefAltiny;
-                hedefMaliyeti = Integer.parseInt(AHedefMaaliyet1.getText());
+                hedefMaliyeti = Integer.parseInt(AHedefMaaliyet.getText());
             } else {//oyuncunun hedefi varsa silinecek altının arraylistteki yeri tespit edilir
                 for (int i = 0; i < altinlar.size(); i++) {
                     if (altinlar.get(i).konum[0] == oyuncuA.hedefAltinKonum[0] && altinlar.get(i).konum[1] == oyuncuA.hedefAltinKonum[1]) {
@@ -266,12 +254,13 @@ public class Arayüz extends javax.swing.JFrame {
             JButtonKare[oyuncuA.hedefAltinKonum[0]][oyuncuA.hedefAltinKonum[1]].setText("<html>" + kareler[oyuncuA.hedefAltinKonum[0]][oyuncuA.hedefAltinKonum[1]].altinMiktari + "<br>" + "X" + "</html>");
 
             adim = hareketEttir(xuzaklik, yuzaklik, adim, oyuncuA, "A", Color.RED);
+            beklemeSuresi = adim * 1000 + 500;
             new Thread() {
                 @Override
                 public void run() {
                     try {
 
-                        Thread.sleep(3500);
+                        Thread.sleep(beklemeSuresi);
                         BOyna();
 
                     } catch (InterruptedException e) {
@@ -280,14 +269,14 @@ public class Arayüz extends javax.swing.JFrame {
                 }
             }.start();
             oyuncuA.harcananAltinMiktari += Integer.parseInt(AHamleMaaliyet.getText()) + hedefMaliyeti;
-            oyuncuA.kasadakiAltinMiktari = oyuncuA.kasadakiAltinMiktari - oyuncuA.harcananAltinMiktari;
+            oyuncuA.kasadakiAltinMiktari -= Integer.parseInt(AHamleMaaliyet.getText()) + hedefMaliyeti;
 
             if (oyuncuA.AktifKonumu[0] == oyuncuA.hedefAltinKonum[0] && oyuncuA.AktifKonumu[1] == oyuncuA.hedefAltinKonum[1]) {//altını aldıysa altının miktarın ekliyoruz
                 oyuncuA.kasadakiAltinMiktari += kareler[oyuncuA.hedefAltinKonum[0]][oyuncuA.hedefAltinKonum[1]].altinMiktari;
                 oyuncuA.toplananAltinMiktari += kareler[oyuncuA.hedefAltinKonum[0]][oyuncuA.hedefAltinKonum[1]].altinMiktari;
 
             }
-            if (Math.abs(yuzaklik) + Math.abs(xuzaklik) <= 3) {//eğer altın a kullanıcısının adımları içerisinde ise altını alacağı için listeden silmemiz gerekir
+            if (Math.abs(yuzaklik) + Math.abs(xuzaklik) <= Integer.valueOf(adimSayisi.getText())) {//eğer altın a kullanıcısının adımları içerisinde ise altını alacağı için listeden silmemiz gerekir
                 altinlar.remove(silinecekAltinIndex);
                 kareler[oyuncuA.hedefAltinKonum[0]][oyuncuA.hedefAltinKonum[1]].altinMiktari = 0;
                 kareler[oyuncuA.hedefAltinKonum[0]][oyuncuA.hedefAltinKonum[1]].gizli = false;
@@ -322,7 +311,7 @@ public class Arayüz extends javax.swing.JFrame {
                     tempxuzaklik = oyuncuB.AktifKonumu[0] - altinlar.get(i).konum[0];
                     tempyuzaklik = oyuncuB.AktifKonumu[1] - altinlar.get(i).konum[1];
 
-                    int kar = (altinlar.get(i).altinMiktari - (((Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik)) * Integer.parseInt(BHamleMaaliyet1.getText())) + Integer.parseInt(BHedefMaaliyet.getText())));
+                    int kar = (altinlar.get(i).altinMiktari - (((Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik)) * Integer.parseInt(BHamleMaaliyet.getText())) + Integer.parseInt(BHedefMaaliyet.getText())));
                     if (kar > enkMaliyet && altinlar.get(i).gizli == false) {
                         enkMaliyet = kar;
                         hedefAltinx = altinlar.get(i).konum[0];
@@ -353,12 +342,13 @@ public class Arayüz extends javax.swing.JFrame {
             JButtonKare[oyuncuB.hedefAltinKonum[0]][oyuncuB.hedefAltinKonum[1]].setText("<html>" + kareler[oyuncuB.hedefAltinKonum[0]][oyuncuB.hedefAltinKonum[1]].altinMiktari + "<br>" + "X" + "</html>");
 
             adim = hareketEttir(xuzaklik, yuzaklik, adim, oyuncuB, "B", Color.ORANGE);
+            beklemeSuresi = adim * 1000 + 500;
             new Thread() {
                 @Override
                 public void run() {
                     try {
 
-                        Thread.sleep(3500);
+                        Thread.sleep(beklemeSuresi);
                         COyna();
 
                     } catch (InterruptedException e) {
@@ -366,15 +356,15 @@ public class Arayüz extends javax.swing.JFrame {
 
                 }
             }.start();
-            oyuncuB.harcananAltinMiktari += Integer.parseInt(BHamleMaaliyet1.getText()) + hedefMaliyeti;
-            oyuncuB.kasadakiAltinMiktari = oyuncuB.kasadakiAltinMiktari - oyuncuB.harcananAltinMiktari;
+            oyuncuB.harcananAltinMiktari += Integer.parseInt(BHamleMaaliyet.getText()) + hedefMaliyeti;
+            oyuncuB.kasadakiAltinMiktari -= Integer.parseInt(BHamleMaaliyet.getText()) + hedefMaliyeti;
 
             if (oyuncuB.AktifKonumu[0] == oyuncuB.hedefAltinKonum[0] && oyuncuB.AktifKonumu[1] == oyuncuB.hedefAltinKonum[1]) {
                 oyuncuB.kasadakiAltinMiktari += kareler[oyuncuB.hedefAltinKonum[0]][oyuncuB.hedefAltinKonum[1]].altinMiktari;
                 oyuncuB.toplananAltinMiktari += kareler[oyuncuB.hedefAltinKonum[0]][oyuncuB.hedefAltinKonum[1]].altinMiktari;
 
             }
-            if (Math.abs(yuzaklik) + Math.abs(xuzaklik) <= 3) {//eğer altın a kullanıcısının adımları içerisinde ise altını alacağı için listeden silmemiz gerekir
+            if (Math.abs(yuzaklik) + Math.abs(xuzaklik) <= Integer.valueOf(adimSayisi.getText())) {//eğer altın a kullanıcısının adımları içerisinde ise altını alacağı için listeden silmemiz gerekir
                 altinlar.remove(silinecekAltinIndex);
                 kareler[oyuncuB.hedefAltinKonum[0]][oyuncuB.hedefAltinKonum[1]].altinMiktari = 0;
                 kareler[oyuncuB.hedefAltinKonum[0]][oyuncuB.hedefAltinKonum[1]].gizli = false;
@@ -412,7 +402,7 @@ public class Arayüz extends javax.swing.JFrame {
                         JButtonKare[altinlar.get(i).konum[0]][altinlar.get(i).konum[1]].setBackground(Color.yellow);
                         altinlar.get(i).gizli = false;
                     }
-                    int kar = (altinlar.get(i).altinMiktari - (((Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik)) * Integer.parseInt(CHamleMaaliyet1.getText())) + Integer.parseInt(CHedefMaaliyet.getText())));
+                    int kar = (altinlar.get(i).altinMiktari - (((Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik)) * Integer.parseInt(CHamleMaaliyet.getText())) + Integer.parseInt(CHedefMaaliyet.getText())));
                     if (kar > enkMaliyet && altinlar.get(i).gizli == false) {
                         enkMaliyet = kar;
                         hedefAltinx = altinlar.get(i).konum[0];
@@ -442,12 +432,13 @@ public class Arayüz extends javax.swing.JFrame {
             JButtonKare[oyuncuC.hedefAltinKonum[0]][oyuncuC.hedefAltinKonum[1]].setText("<html>" + kareler[oyuncuC.hedefAltinKonum[0]][oyuncuC.hedefAltinKonum[1]].altinMiktari + "<br>" + "X" + "</html>");
 
             adim = hareketEttir(xuzaklik, yuzaklik, adim, oyuncuC, "C", Color.BLUE);
+            beklemeSuresi = adim * 1000 + 500;
             new Thread() {
                 @Override
                 public void run() {
                     try {
 
-                        Thread.sleep(3500);
+                        Thread.sleep(beklemeSuresi);
                         DOyna();
 
                     } catch (InterruptedException e) {
@@ -455,15 +446,15 @@ public class Arayüz extends javax.swing.JFrame {
 
                 }
             }.start();
-            oyuncuC.harcananAltinMiktari += Integer.parseInt(CHamleMaaliyet1.getText()) + hedefMaliyet;
-            oyuncuC.kasadakiAltinMiktari = oyuncuC.kasadakiAltinMiktari - oyuncuC.harcananAltinMiktari;
+            oyuncuC.harcananAltinMiktari += Integer.parseInt(CHamleMaaliyet.getText()) + hedefMaliyet;
+            oyuncuC.kasadakiAltinMiktari -= Integer.parseInt(CHamleMaaliyet.getText()) + hedefMaliyet;
 
             if (oyuncuC.AktifKonumu[0] == oyuncuC.hedefAltinKonum[0] && oyuncuC.AktifKonumu[1] == oyuncuC.hedefAltinKonum[1]) {
                 oyuncuC.kasadakiAltinMiktari += kareler[oyuncuC.hedefAltinKonum[0]][oyuncuC.hedefAltinKonum[1]].altinMiktari;
                 oyuncuC.toplananAltinMiktari += kareler[oyuncuC.hedefAltinKonum[0]][oyuncuC.hedefAltinKonum[1]].altinMiktari;
 
             }
-            if (Math.abs(yuzaklik) + Math.abs(xuzaklik) <= 3) {//eğer altın a kullanıcısının adımları içerisinde ise altını alacağı için listeden silmemiz gerekir
+            if (Math.abs(yuzaklik) + Math.abs(xuzaklik) <= Integer.valueOf(adimSayisi.getText())) {//eğer altın a kullanıcısının adımları içerisinde ise altını alacağı için listeden silmemiz gerekir
                 altinlar.remove(silinecekAltinIndex);
                 kareler[oyuncuC.hedefAltinKonum[0]][oyuncuC.hedefAltinKonum[1]].altinMiktari = 0;
                 kareler[oyuncuC.hedefAltinKonum[0]][oyuncuC.hedefAltinKonum[1]].gizli = false;
@@ -503,13 +494,13 @@ public class Arayüz extends javax.swing.JFrame {
                 }
                 int aUzaklik = Math.abs(oyuncuA.AktifKonumu[0] - hedefAltinx) + Math.abs(oyuncuA.AktifKonumu[1] - hedefAltiny);
                 int dUzaklik = Math.abs(oyuncuD.AktifKonumu[0] - hedefAltinx) + Math.abs(oyuncuD.AktifKonumu[1] - hedefAltiny);
-                if (dUzaklik > aUzaklik && dUzaklik > 3) {
+                if (dUzaklik > aUzaklik && dUzaklik > Integer.valueOf(adimSayisi.getText())) {
                     dAltinlar.remove(altinlar.get(silinecekAltinIndex));
                 }
             } else {// a nın hedefi varsa
                 int aUzaklik = Math.abs(oyuncuA.AktifKonumu[0] - oyuncuA.hedefAltinKonum[0]) + Math.abs(oyuncuA.AktifKonumu[1] - oyuncuA.hedefAltinKonum[1]);
                 int dUzaklik = Math.abs(oyuncuD.AktifKonumu[0] - oyuncuA.hedefAltinKonum[0]) + Math.abs(oyuncuD.AktifKonumu[1] - oyuncuA.hedefAltinKonum[1]);
-                if (dUzaklik > aUzaklik && dUzaklik > 3) {
+                if (dUzaklik > aUzaklik && dUzaklik > Integer.valueOf(adimSayisi.getText())) {
                     for (int k = 0; k < altinlar.size(); k++) { // a nın hedefi varsa yine uzaklıkları karşılaştır a daha önce ulaşıyorsa karşılaştırıp dAltinlar dan sil
                         if (Arrays.equals(altinlar.get(k).konum, oyuncuA.hedefAltinKonum)) {
                             dAltinlar.remove(altinlar.get(k));
@@ -529,7 +520,7 @@ public class Arayüz extends javax.swing.JFrame {
                     tempxuzaklik = oyuncuB.AktifKonumu[0] - altinlar.get(i).konum[0];
                     tempyuzaklik = oyuncuB.AktifKonumu[1] - altinlar.get(i).konum[1];
 
-                    int kar = (altinlar.get(i).altinMiktari - (((Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik)) * Integer.parseInt(BHamleMaaliyet1.getText())) + Integer.parseInt(BHedefMaaliyet.getText())));
+                    int kar = (altinlar.get(i).altinMiktari - (((Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik)) * Integer.parseInt(BHamleMaaliyet.getText())) + Integer.parseInt(BHedefMaaliyet.getText())));
                     if (kar > enkMaliyet && altinlar.get(i).gizli == false) {
                         enkMaliyet = kar;
                         hedefAltinx = altinlar.get(i).konum[0];
@@ -542,13 +533,13 @@ public class Arayüz extends javax.swing.JFrame {
                 }
                 int bUzaklik = Math.abs(oyuncuB.AktifKonumu[0] - hedefAltinx) + Math.abs(oyuncuB.AktifKonumu[1] - hedefAltiny);
                 int dUzaklik = Math.abs(oyuncuD.AktifKonumu[0] - hedefAltinx) + Math.abs(oyuncuD.AktifKonumu[1] - hedefAltiny);
-                if (dUzaklik > bUzaklik && dUzaklik > 3) {
+                if (dUzaklik > bUzaklik && dUzaklik > Integer.valueOf(adimSayisi.getText())) {
                     dAltinlar.remove(altinlar.get(silinecekAltinIndex));
                 }
             } else {// B nın hedefi varsa
                 int bUzaklik = Math.abs(oyuncuB.AktifKonumu[0] - oyuncuB.hedefAltinKonum[0]) + Math.abs(oyuncuB.AktifKonumu[1] - oyuncuB.hedefAltinKonum[1]);
                 int dUzaklik = Math.abs(oyuncuD.AktifKonumu[0] - oyuncuB.hedefAltinKonum[0]) + Math.abs(oyuncuD.AktifKonumu[1] - oyuncuB.hedefAltinKonum[1]);
-                if (dUzaklik > bUzaklik && dUzaklik > 3) {
+                if (dUzaklik > bUzaklik && dUzaklik > Integer.valueOf(adimSayisi.getText())) {
                     for (int k = 0; k < altinlar.size(); k++) { // b nın hedefi varsa yine uzaklıkları karşılaştır b daha önce ulaşıyorsa karşılaştırıp dAltinlar dan sil
                         if (Arrays.equals(altinlar.get(k).konum, oyuncuB.hedefAltinKonum)) {
                             dAltinlar.remove(altinlar.get(k));
@@ -571,7 +562,7 @@ public class Arayüz extends javax.swing.JFrame {
                         JButtonKare[altinlar.get(i).konum[0]][altinlar.get(i).konum[1]].setBackground(Color.yellow);
                         altinlar.get(i).gizli = false;
                     }
-                    int kar = (altinlar.get(i).altinMiktari - (((Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik)) * Integer.parseInt(CHamleMaaliyet1.getText())) + Integer.parseInt(CHedefMaaliyet.getText())));
+                    int kar = (altinlar.get(i).altinMiktari - (((Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik)) * Integer.parseInt(CHamleMaaliyet.getText())) + Integer.parseInt(CHedefMaaliyet.getText())));
                     if (kar > enkMaliyet && altinlar.get(i).gizli == false) {
                         enkMaliyet = kar;
                         hedefAltinx = altinlar.get(i).konum[0];
@@ -583,13 +574,13 @@ public class Arayüz extends javax.swing.JFrame {
                 }
                 int cUzaklik = Math.abs(oyuncuC.AktifKonumu[0] - hedefAltinx) + Math.abs(oyuncuC.AktifKonumu[1] - hedefAltiny);
                 int dUzaklik = Math.abs(oyuncuD.AktifKonumu[0] - hedefAltinx) + Math.abs(oyuncuD.AktifKonumu[1] - hedefAltiny);
-                if (dUzaklik > cUzaklik && dUzaklik > 3) {
+                if (dUzaklik > cUzaklik && dUzaklik > Integer.valueOf(adimSayisi.getText())) {
                     dAltinlar.remove(altinlar.get(silinecekAltinIndex));
                 }
             } else {// C nın hedefi varsa
                 int cUzaklik = Math.abs(oyuncuC.AktifKonumu[0] - oyuncuC.hedefAltinKonum[0]) + Math.abs(oyuncuC.AktifKonumu[1] - oyuncuC.hedefAltinKonum[1]);
                 int dUzaklik = Math.abs(oyuncuD.AktifKonumu[0] - oyuncuC.hedefAltinKonum[0]) + Math.abs(oyuncuD.AktifKonumu[1] - oyuncuC.hedefAltinKonum[1]);
-                if (dUzaklik > cUzaklik && dUzaklik > 3) {
+                if (dUzaklik > cUzaklik && dUzaklik > Integer.valueOf(adimSayisi.getText())) {
                     for (int k = 0; k < altinlar.size(); k++) { // c nın hedefi varsa yine uzaklıkları karşılaştır c daha önce ulaşıyorsa karşılaştırıp dAltinlar dan sil
                         if (Arrays.equals(altinlar.get(k).konum, oyuncuC.hedefAltinKonum)) {
                             dAltinlar.remove(altinlar.get(k));
@@ -615,7 +606,7 @@ public class Arayüz extends javax.swing.JFrame {
                     tempxuzaklik = oyuncuD.AktifKonumu[0] - dAltinlar.get(i).konum[0];
                     tempyuzaklik = oyuncuD.AktifKonumu[1] - dAltinlar.get(i).konum[1];
 
-                    int kar = (dAltinlar.get(i).altinMiktari - (((Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik)) * Integer.parseInt(BHamleMaaliyet1.getText())) + Integer.parseInt(BHedefMaaliyet.getText())));
+                    int kar = (dAltinlar.get(i).altinMiktari - (((Math.abs(tempxuzaklik) + Math.abs(tempyuzaklik)) * Integer.parseInt(BHamleMaaliyet.getText())) + Integer.parseInt(BHedefMaaliyet.getText())));
                     if (kar > enkMaliyet && dAltinlar.get(i).gizli == false) {
                         enkMaliyet = kar;
                         hedefAltinx = dAltinlar.get(i).konum[0];
@@ -646,12 +637,13 @@ public class Arayüz extends javax.swing.JFrame {
             JButtonKare[oyuncuD.hedefAltinKonum[0]][oyuncuD.hedefAltinKonum[1]].setText("<html>" + kareler[oyuncuD.hedefAltinKonum[0]][oyuncuD.hedefAltinKonum[1]].altinMiktari + "<br>" + "X" + "</html>");
 
             adim = hareketEttir(xuzaklik, yuzaklik, adim, oyuncuD, "D", Color.GREEN);
+            beklemeSuresi = adim * 1000 + 500;
             new Thread() {
                 @Override
                 public void run() {
                     try {
 
-                        Thread.sleep(3500);
+                        Thread.sleep(beklemeSuresi);
                         AOyna();
 
                     } catch (InterruptedException e) {
@@ -659,15 +651,15 @@ public class Arayüz extends javax.swing.JFrame {
 
                 }
             }.start();
-            oyuncuD.harcananAltinMiktari += Integer.parseInt(BHamleMaaliyet1.getText()) + hedefMaliyeti;
-            oyuncuD.kasadakiAltinMiktari = oyuncuD.kasadakiAltinMiktari - oyuncuD.harcananAltinMiktari;
+            oyuncuD.harcananAltinMiktari += Integer.parseInt(BHamleMaaliyet.getText()) + hedefMaliyeti;
+            oyuncuD.kasadakiAltinMiktari -= Integer.parseInt(BHamleMaaliyet.getText()) + hedefMaliyeti;
 
             if (oyuncuD.AktifKonumu[0] == oyuncuD.hedefAltinKonum[0] && oyuncuD.AktifKonumu[1] == oyuncuD.hedefAltinKonum[1]) {
                 oyuncuD.kasadakiAltinMiktari += kareler[oyuncuD.hedefAltinKonum[0]][oyuncuD.hedefAltinKonum[1]].altinMiktari;
                 oyuncuD.toplananAltinMiktari += kareler[oyuncuD.hedefAltinKonum[0]][oyuncuD.hedefAltinKonum[1]].altinMiktari;
 
             }
-            if (Math.abs(yuzaklik) + Math.abs(xuzaklik) <= 3) {//eğer altın a kullanıcısının adımları içerisinde ise altını alacağı için listeden silmemiz gerekir
+            if (Math.abs(yuzaklik) + Math.abs(xuzaklik) <= Integer.valueOf(adimSayisi.getText())) {//eğer altın a kullanıcısının adımları içerisinde ise altını alacağı için listeden silmemiz gerekir
                 altinlar.remove(dAltinlar.get(silinecekAltinIndex));
                 kareler[oyuncuD.hedefAltinKonum[0]][oyuncuD.hedefAltinKonum[1]].altinMiktari = 0;
                 kareler[oyuncuD.hedefAltinKonum[0]][oyuncuD.hedefAltinKonum[1]].gizli = false;
@@ -679,10 +671,10 @@ public class Arayüz extends javax.swing.JFrame {
     }
 
     public int hareketEttir(int xuzaklik, int yuzaklik, int adim, Oyuncu oyuncu, String oyuncuIsmi, Color renk) {
-        int tmpAdimlar[][] = new int[3][2];
+        int tmpAdimlar[][] = new int[Integer.valueOf(adimSayisi.getText())][2];
         if (xuzaklik < 0 && yuzaklik < 0) {
             for (int i = oyuncu.AktifKonumu[0]; i < oyuncu.hedefAltinKonum[0]; i++) {
-                if (adim < 3) {
+                if (adim < Integer.valueOf(adimSayisi.getText())) {
 
                     adim++;
                     int sleep = adim * hareketBeklemeSuresi;
@@ -743,7 +735,7 @@ public class Arayüz extends javax.swing.JFrame {
 
             }
             for (int i = oyuncu.AktifKonumu[1]; i < oyuncu.hedefAltinKonum[1]; i++) {
-                if (adim < 3) {
+                if (adim < Integer.valueOf(adimSayisi.getText())) {
                     adim++;
                     int sleep = adim * hareketBeklemeSuresi;
 
@@ -804,7 +796,7 @@ public class Arayüz extends javax.swing.JFrame {
 
         if (xuzaklik < 0 && yuzaklik == 0) {
             for (int i = oyuncu.AktifKonumu[0]; i < oyuncu.hedefAltinKonum[0]; i++) {
-                if (adim < 3) {
+                if (adim < Integer.valueOf(adimSayisi.getText())) {
 
                     adim++;
                     int sleep = adim * hareketBeklemeSuresi;
@@ -868,7 +860,7 @@ public class Arayüz extends javax.swing.JFrame {
         }
         if (xuzaklik > 0 && yuzaklik < 0) {
             for (int i = oyuncu.AktifKonumu[0]; i > oyuncu.hedefAltinKonum[0]; i--) {
-                if (adim < 3) {
+                if (adim < Integer.valueOf(adimSayisi.getText())) {
 
                     adim++;
                     int sleep = adim * hareketBeklemeSuresi;
@@ -927,7 +919,7 @@ public class Arayüz extends javax.swing.JFrame {
 
             }
             for (int i = oyuncu.AktifKonumu[1]; i < oyuncu.hedefAltinKonum[1]; i++) {
-                if (adim < 3) {
+                if (adim < Integer.valueOf(adimSayisi.getText())) {
                     adim++;
                     int sleep = adim * hareketBeklemeSuresi;
 
@@ -988,7 +980,7 @@ public class Arayüz extends javax.swing.JFrame {
 
         if (xuzaklik > 0 && yuzaklik == 0) {
             for (int i = oyuncu.AktifKonumu[0]; i > oyuncu.hedefAltinKonum[0]; i--) {
-                if (adim < 3) {
+                if (adim < Integer.valueOf(adimSayisi.getText())) {
 
                     adim++;
                     int sleep = adim * hareketBeklemeSuresi;
@@ -1052,7 +1044,7 @@ public class Arayüz extends javax.swing.JFrame {
         ///////
         if (yuzaklik > 0 && xuzaklik < 0) {
             for (int i = oyuncu.AktifKonumu[0]; i < oyuncu.hedefAltinKonum[0]; i++) {
-                if (adim < 3) {
+                if (adim < Integer.valueOf(adimSayisi.getText())) {
 
                     adim++;
                     int sleep = adim * hareketBeklemeSuresi;
@@ -1112,7 +1104,7 @@ public class Arayüz extends javax.swing.JFrame {
 
             }
             for (int i = oyuncu.AktifKonumu[1]; i > oyuncu.hedefAltinKonum[1]; i--) {
-                if (adim < 3) {
+                if (adim < Integer.valueOf(adimSayisi.getText())) {
                     adim++;
                     int sleep = adim * hareketBeklemeSuresi;
 
@@ -1172,7 +1164,7 @@ public class Arayüz extends javax.swing.JFrame {
         }
         if (yuzaklik > 0 && xuzaklik > 0) {
             for (int i = oyuncu.AktifKonumu[0]; i > oyuncu.hedefAltinKonum[0]; i--) {
-                if (adim < 3) {
+                if (adim < Integer.valueOf(adimSayisi.getText())) {
 
                     adim++;
                     int sleep = adim * hareketBeklemeSuresi;
@@ -1231,7 +1223,7 @@ public class Arayüz extends javax.swing.JFrame {
 
             }
             for (int i = oyuncu.AktifKonumu[1]; i > oyuncu.hedefAltinKonum[1]; i--) {
-                if (adim < 3) {
+                if (adim < Integer.valueOf(adimSayisi.getText())) {
                     adim++;
                     int sleep = adim * hareketBeklemeSuresi;
 
@@ -1290,7 +1282,7 @@ public class Arayüz extends javax.swing.JFrame {
         }
         if (yuzaklik > 0 && xuzaklik == 0) {
             for (int i = oyuncu.AktifKonumu[1]; i > oyuncu.hedefAltinKonum[1]; i--) {
-                if (adim < 3) {
+                if (adim < Integer.valueOf(adimSayisi.getText())) {
                     adim++;
                     int sleep = adim * hareketBeklemeSuresi;
 
@@ -1350,7 +1342,7 @@ public class Arayüz extends javax.swing.JFrame {
         }
         if (yuzaklik < 0 && xuzaklik < 0) {
             for (int i = oyuncu.AktifKonumu[0]; i < oyuncu.hedefAltinKonum[0]; i++) {
-                if (adim < 3) {
+                if (adim < Integer.valueOf(adimSayisi.getText())) {
 
                     adim++;
                     int sleep = adim * hareketBeklemeSuresi;
@@ -1410,7 +1402,7 @@ public class Arayüz extends javax.swing.JFrame {
 
             }
             for (int i = oyuncu.AktifKonumu[1]; i < oyuncu.hedefAltinKonum[1]; i++) {
-                if (adim < 3) {
+                if (adim < Integer.valueOf(adimSayisi.getText())) {
                     adim++;
                     int sleep = adim * hareketBeklemeSuresi;
 
@@ -1471,7 +1463,7 @@ public class Arayüz extends javax.swing.JFrame {
         if (yuzaklik < 0 && xuzaklik == 0) {
 
             for (int i = oyuncu.AktifKonumu[1]; i < oyuncu.hedefAltinKonum[1]; i++) {
-                if (adim < 3) {
+                if (adim < Integer.valueOf(adimSayisi.getText())) {
                     adim++;
                     int sleep = adim * hareketBeklemeSuresi;
 
@@ -1594,10 +1586,10 @@ public class Arayüz extends javax.swing.JFrame {
         DHamleMaaliyet = new javax.swing.JTextField();
         BHedefMaaliyet = new javax.swing.JTextField();
         CHedefMaaliyet = new javax.swing.JTextField();
-        AHedefMaaliyet1 = new javax.swing.JTextField();
+        AHedefMaaliyet = new javax.swing.JTextField();
         AHamleMaaliyet = new javax.swing.JTextField();
-        BHamleMaaliyet1 = new javax.swing.JTextField();
-        CHamleMaaliyet1 = new javax.swing.JTextField();
+        BHamleMaaliyet = new javax.swing.JTextField();
+        CHamleMaaliyet = new javax.swing.JTextField();
         dikdötgenBoyutText = new javax.swing.JLabel();
         mevcutAltinText = new javax.swing.JLabel();
         altinOraniText = new javax.swing.JLabel();
@@ -1605,12 +1597,12 @@ public class Arayüz extends javax.swing.JFrame {
         adimSayisiText = new javax.swing.JLabel();
         hedef = new javax.swing.JLabel();
         hamle1 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
+        dText = new javax.swing.JLabel();
+        aText = new javax.swing.JLabel();
+        bText = new javax.swing.JLabel();
+        cText = new javax.swing.JLabel();
+        baslik1 = new javax.swing.JLabel();
+        baslik0 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setSize(new java.awt.Dimension(800, 800));
@@ -1625,20 +1617,10 @@ public class Arayüz extends javax.swing.JFrame {
         kontrolAlani.setLayout(null);
 
         tahtaX.setText("800");
-        tahtaX.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tahtaXActionPerformed(evt);
-            }
-        });
         kontrolAlani.add(tahtaX);
         tahtaX.setBounds(120, 160, 50, 30);
 
         tahtaY.setText("800");
-        tahtaY.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tahtaYActionPerformed(evt);
-            }
-        });
         kontrolAlani.add(tahtaY);
         tahtaY.setBounds(200, 160, 50, 30);
 
@@ -1652,11 +1634,6 @@ public class Arayüz extends javax.swing.JFrame {
         basla.setBounds(50, 690, 140, 28);
 
         kareKenar.setText("20");
-        kareKenar.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                kareKenarKeyTyped(evt);
-            }
-        });
         kontrolAlani.add(kareKenar);
         kareKenar.setBounds(120, 200, 50, 30);
 
@@ -1677,20 +1654,10 @@ public class Arayüz extends javax.swing.JFrame {
         altinOrani.setBounds(120, 280, 50, 30);
 
         gizliAltinOrani.setText("10");
-        gizliAltinOrani.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                gizliAltinOraniActionPerformed(evt);
-            }
-        });
         kontrolAlani.add(gizliAltinOrani);
         gizliAltinOrani.setBounds(120, 320, 50, 30);
 
         adimSayisi.setText("3");
-        adimSayisi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                adimSayisiActionPerformed(evt);
-            }
-        });
         kontrolAlani.add(adimSayisi);
         adimSayisi.setBounds(120, 360, 50, 30);
 
@@ -1710,21 +1677,21 @@ public class Arayüz extends javax.swing.JFrame {
         kontrolAlani.add(CHedefMaaliyet);
         CHedefMaaliyet.setBounds(40, 590, 70, 35);
 
-        AHedefMaaliyet1.setText("5");
-        kontrolAlani.add(AHedefMaaliyet1);
-        AHedefMaaliyet1.setBounds(40, 510, 70, 35);
+        AHedefMaaliyet.setText("5");
+        kontrolAlani.add(AHedefMaaliyet);
+        AHedefMaaliyet.setBounds(40, 510, 70, 35);
 
         AHamleMaaliyet.setText("5");
         kontrolAlani.add(AHamleMaaliyet);
         AHamleMaaliyet.setBounds(150, 510, 70, 35);
 
-        BHamleMaaliyet1.setText("5");
-        kontrolAlani.add(BHamleMaaliyet1);
-        BHamleMaaliyet1.setBounds(150, 550, 70, 35);
+        BHamleMaaliyet.setText("5");
+        kontrolAlani.add(BHamleMaaliyet);
+        BHamleMaaliyet.setBounds(150, 550, 70, 35);
 
-        CHamleMaaliyet1.setText("5");
-        kontrolAlani.add(CHamleMaaliyet1);
-        CHamleMaaliyet1.setBounds(150, 590, 70, 35);
+        CHamleMaaliyet.setText("5");
+        kontrolAlani.add(CHamleMaaliyet);
+        CHamleMaaliyet.setBounds(150, 590, 70, 35);
 
         dikdötgenBoyutText.setText("Tahta Boyutu :");
         kontrolAlani.add(dikdötgenBoyutText);
@@ -1754,57 +1721,37 @@ public class Arayüz extends javax.swing.JFrame {
         kontrolAlani.add(hamle1);
         hamle1.setBounds(140, 470, 110, 18);
 
-        jLabel1.setText("D");
-        kontrolAlani.add(jLabel1);
-        jLabel1.setBounds(10, 630, 30, 30);
+        dText.setText("D");
+        kontrolAlani.add(dText);
+        dText.setBounds(10, 630, 30, 30);
 
-        jLabel2.setText("A");
-        kontrolAlani.add(jLabel2);
-        jLabel2.setBounds(10, 510, 30, 30);
+        aText.setText("A");
+        kontrolAlani.add(aText);
+        aText.setBounds(10, 510, 30, 30);
 
-        jLabel3.setText("B");
-        kontrolAlani.add(jLabel3);
-        jLabel3.setBounds(10, 550, 30, 30);
+        bText.setText("B");
+        kontrolAlani.add(bText);
+        bText.setBounds(10, 550, 30, 30);
 
-        jLabel4.setText("C");
-        kontrolAlani.add(jLabel4);
-        jLabel4.setBounds(10, 590, 30, 30);
+        cText.setText("C");
+        kontrolAlani.add(cText);
+        cText.setBounds(10, 590, 30, 30);
 
-        jLabel5.setFont(new java.awt.Font("Noto Serif CJK KR", 0, 18)); // NOI18N
-        jLabel5.setText("TOPLAMA OYUNU");
-        kontrolAlani.add(jLabel5);
-        jLabel5.setBounds(40, 40, 240, 80);
+        baslik1.setFont(new java.awt.Font("Noto Serif CJK KR", 0, 18)); // NOI18N
+        baslik1.setText("TOPLAMA OYUNU");
+        kontrolAlani.add(baslik1);
+        baslik1.setBounds(40, 40, 240, 80);
 
-        jLabel6.setFont(new java.awt.Font("Noto Serif CJK KR", 0, 18)); // NOI18N
-        jLabel6.setText("ALTIN");
-        kontrolAlani.add(jLabel6);
-        jLabel6.setBounds(90, 0, 90, 80);
+        baslik0.setFont(new java.awt.Font("Noto Serif CJK KR", 0, 18)); // NOI18N
+        baslik0.setText("ALTIN");
+        kontrolAlani.add(baslik0);
+        baslik0.setBounds(90, 0, 90, 80);
 
         getContentPane().add(kontrolAlani);
         kontrolAlani.setBounds(800, 0, 250, 800);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void tahtaYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tahtaYActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tahtaYActionPerformed
-
-    private void tahtaXActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tahtaXActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tahtaXActionPerformed
-
-    private void kareKenarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kareKenarKeyTyped
-
-    }//GEN-LAST:event_kareKenarKeyTyped
-
-    private void gizliAltinOraniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gizliAltinOraniActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_gizliAltinOraniActionPerformed
-
-    private void adimSayisiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adimSayisiActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_adimSayisiActionPerformed
 
     private void baslaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_baslaActionPerformed
         oyunOlustur();
@@ -1856,7 +1803,7 @@ public class Arayüz extends javax.swing.JFrame {
                     f.delete();
                 } // eğer dosyamız varsa.. // silme işlemi gerçekleştirir.
                 new Arayüz().setVisible(true);
-                String path = "cikti.txt";// Oluşturulacak dosyanın yolu.
+                String path = ".//cikti.txt";// Oluşturulacak dosyanın yolu.
                 File file = new File(path);
 
                 try {
@@ -1887,9 +1834,9 @@ public class Arayüz extends javax.swing.JFrame {
                     Logger.getLogger(Arayüz.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
-                String content = "                                             OyuncuA               OyuncuB               OyuncuC               OyuncuD\n";
                 try {
-                    bufferedWriter.write(content);
+                    bufferedWriter.write("                                             OyuncuA               OyuncuB               OyuncuC               OyuncuD\n");
+                    bufferedWriter.write("----------------------------------------------------------------------------------------------------------------------\n");
                 } catch (IOException ex) {
                     Logger.getLogger(Arayüz.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -1907,30 +1854,30 @@ public class Arayüz extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField AHamleMaaliyet;
-    private javax.swing.JTextField AHedefMaaliyet1;
-    private javax.swing.JTextField BHamleMaaliyet1;
+    private javax.swing.JTextField AHedefMaaliyet;
+    private javax.swing.JTextField BHamleMaaliyet;
     private javax.swing.JTextField BHedefMaaliyet;
-    private javax.swing.JTextField CHamleMaaliyet1;
+    private javax.swing.JTextField CHamleMaaliyet;
     private javax.swing.JTextField CHedefMaaliyet;
     private javax.swing.JTextField DHamleMaaliyet;
     private javax.swing.JTextField DHedefMaaliyet;
+    private javax.swing.JLabel aText;
     private javax.swing.JTextField adimSayisi;
     private javax.swing.JLabel adimSayisiText;
     private javax.swing.JTextField altinOrani;
     private javax.swing.JLabel altinOraniText;
+    private javax.swing.JLabel bText;
     private javax.swing.JButton basla;
+    private javax.swing.JLabel baslik0;
+    private javax.swing.JLabel baslik1;
+    private javax.swing.JLabel cText;
     private javax.swing.JLabel carpiText;
+    private javax.swing.JLabel dText;
     private javax.swing.JLabel dikdötgenBoyutText;
     private javax.swing.JTextField gizliAltinOrani;
     private javax.swing.JLabel gizliAltinOraniText;
     private javax.swing.JLabel hamle1;
     private javax.swing.JLabel hedef;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel kareBoyutText;
     private javax.swing.JTextField kareKenar;
     private javax.swing.JPanel kontrolAlani;
